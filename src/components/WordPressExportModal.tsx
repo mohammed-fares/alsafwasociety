@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   X, 
   Download, 
@@ -46,7 +46,7 @@ export const WordPressExportModal: React.FC<WordPressExportModalProps> = ({
 }) => {
   const info = content || (SOCIETY_INFO as unknown as SiteContentData);
   const [activeTab, setActiveTab] = useState<TabType>('packages');
-  const [files] = useState<WPThemeFile[]>(() => generateWordPressThemeFiles(content, activities));
+  const files = useMemo(() => generateWordPressThemeFiles(content, activities), [content, activities]);
   const [selectedFileIndex, setSelectedFileIndex] = useState<number>(0);
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [copiedShortcode, setCopiedShortcode] = useState<string | null>(null);
