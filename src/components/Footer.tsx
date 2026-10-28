@@ -1,13 +1,16 @@
 import React from 'react';
 import { Phone, Mail, MapPin, Download, Heart, ShieldCheck } from 'lucide-react';
+import { SiteContentData } from '../types';
 import { SOCIETY_INFO } from '../data/societyData';
 
 interface FooterProps {
+  content?: SiteContentData;
   onOpenDonate: () => void;
   onOpenWpExport: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onOpenWpExport }) => {
+export const Footer: React.FC<FooterProps> = ({ content, onOpenDonate, onOpenWpExport }) => {
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
   return (
     <footer className="bg-[#052316] text-stone-300 pt-16 pb-10 border-t-4 border-[#C5A059]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,7 +21,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onOpenWpExport }) 
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <img
-                src={SOCIETY_INFO.logoUrl}
+                src={info.logoUrl}
                 alt="جمعية الصفوة الإسلامية"
                 className="w-12 h-12 object-contain bg-white rounded-full p-1"
               />
@@ -33,17 +36,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onOpenWpExport }) 
             </div>
 
             <p className="text-xs text-stone-300 leading-relaxed">
-              جمعية أهلية مصرية رائدة مشهرة برقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear} بإدارة المطرية - القاهرة. نعمل منذ أكثر من 33 عاماً في رعاية الأيتام والفقراء وتسيير القوافل الطبية وعمارة بيوت الله وسيارة نقل الموتى.
+              جمعية أهلية مصرية رائدة مشهرة برقم {info.registrationNumber} لسنة {info.registrationYear} بإدارة المطرية - القاهرة. نعمل منذ أكثر من 33 عاماً في رعاية الأيتام والفقراء وتسيير القوافل الطبية وعمارة بيوت الله وسيارة نقل الموتى.
             </p>
 
             <div className="pt-2 text-[11px] text-emerald-400 font-mono">
-              تاريخ اعتماد اللائحة: {SOCIETY_INFO.bylawApprovalDate}
+              تاريخ اعتماد اللائحة: {info.bylawApprovalDate}
             </div>
 
             {/* Social media links in footer */}
             <div className="pt-3 border-t border-emerald-900/60 flex items-center gap-2.5">
               <a
-                href={SOCIETY_INFO.socialLinks.facebookPage}
+                href={info.socialLinks.facebookPage}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-emerald-900/80 hover:bg-[#1877F2] text-white flex items-center justify-center transition-colors"
@@ -55,7 +58,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onOpenWpExport }) 
               </a>
 
               <a
-                href={SOCIETY_INFO.socialLinks.facebookGroup}
+                href={info.socialLinks.facebookGroup}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-2.5 py-1.5 rounded-lg bg-emerald-900/80 hover:bg-emerald-800 text-amber-300 text-xs font-bold transition-colors"
@@ -65,7 +68,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onOpenWpExport }) 
               </a>
 
               <a
-                href={SOCIETY_INFO.socialLinks.youtube}
+                href={info.socialLinks.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-emerald-900/80 hover:bg-[#FF0000] text-white flex items-center justify-center transition-colors"
@@ -132,14 +135,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onOpenWpExport }) 
               <div className="p-2.5 rounded-lg bg-emerald-950/70 border border-emerald-900">
                 <span className="text-stone-400 block text-[11px]">معرف إنستاباي (InstaPay IPA):</span>
                 <span className="font-mono text-white font-bold block mt-0.5 select-all">
-                  {SOCIETY_INFO.paymentGateways.instaPay.id}
+                  {info.paymentGateways?.instaPay?.id || 'alsafwasociety@instapay'}
                 </span>
               </div>
 
               <div className="p-2.5 rounded-lg bg-emerald-950/70 border border-emerald-900">
                 <span className="text-stone-400 block text-[11px]">فودافون كاش ومحافظ المحمول:</span>
                 <span className="font-mono text-white font-bold block mt-0.5 select-all">
-                  {SOCIETY_INFO.phone}
+                  {info.phone}
                 </span>
               </div>
 
@@ -179,7 +182,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onOpenWpExport }) 
             <div className="pt-2 text-xs space-y-1.5 text-stone-400">
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span className="font-mono text-stone-200">{SOCIETY_INFO.phone}</span>
+                <span className="font-mono text-stone-200">{info.phone}</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -195,7 +198,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenDonate, onOpenWpExport }) 
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
             <p>
-              © {new Date().getFullYear()} جمعية الصفوة الإسلامية - مشهرة برقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear}. جميع الحقوق محفوظة.
+              © {new Date().getFullYear()} جمعية الصفوة الإسلامية - مشهرة برقم {info.registrationNumber} لسنة {info.registrationYear}. جميع الحقوق محفوظة.
             </p>
           </div>
           

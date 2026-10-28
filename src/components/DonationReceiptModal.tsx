@@ -1,17 +1,20 @@
 import React from 'react';
 import { X, Printer, Share2, CheckCircle2, ShieldCheck, Heart } from 'lucide-react';
-import { DonationReceiptData } from '../types';
+import { DonationReceiptData, SiteContentData } from '../types';
 import { SOCIETY_INFO } from '../data/societyData';
 
 interface DonationReceiptModalProps {
   receipt: DonationReceiptData | null;
   onClose: () => void;
+  content?: SiteContentData;
 }
 
 export const DonationReceiptModal: React.FC<DonationReceiptModalProps> = ({
   receipt,
   onClose,
+  content,
 }) => {
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
   if (!receipt) return null;
 
   const handlePrint = () => {
@@ -59,7 +62,7 @@ export const DonationReceiptModal: React.FC<DonationReceiptModalProps> = ({
           <div className="border-b-2 border-[#0F5132] pb-6 flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
               <img
-                src={SOCIETY_INFO.logoUrl}
+                src={info.logoUrl}
                 alt="شعار جمعية الصفوة الإسلامية"
                 className="w-16 h-16 object-contain rounded-full border border-emerald-200 p-1 bg-white"
               />
@@ -71,7 +74,7 @@ export const DonationReceiptModal: React.FC<DonationReceiptModalProps> = ({
                   ALSAFWA ISLAMIC SOCIETY
                 </span>
                 <p className="text-[11px] text-stone-600 mt-0.5">
-                  مشهرة برقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear} · إدارة المطرية - القاهرة
+                  مشهرة برقم {info.registrationNumber} لسنة {info.registrationYear} · إدارة المطرية - القاهرة
                 </p>
               </div>
             </div>

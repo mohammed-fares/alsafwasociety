@@ -1,13 +1,16 @@
 import React from 'react';
 import { Heart, Sparkles, ShieldCheck, ArrowDown, CheckCircle2 } from 'lucide-react';
 import { SOCIETY_INFO } from '../data/societyData';
+import { SiteContentData } from '../types';
 
 interface HeroProps {
+  content?: SiteContentData;
   onOpenDonate: (programId?: string) => void;
   onSelectProgram: (programId: string) => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenDonate }) => {
+export const Hero: React.FC<HeroProps> = ({ content, onOpenDonate }) => {
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
   return (
     <section className="relative overflow-hidden bg-dark-emerald text-white pt-10 pb-16 lg:pt-16 lg:pb-24 border-b border-emerald-900">
       {/* Decorative Islamic Geometric subtle background elements */}
@@ -22,7 +25,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenDonate }) => {
             {/* Trust badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-xs text-emerald-200">
               <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>مشهرة برقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear} · مديرية التضامن الاجتماعي بالقاهرة</span>
+              <span>مشهرة برقم {info.registrationNumber} لسنة {info.registrationYear} · مديرية التضامن الاجتماعي بالقاهرة</span>
             </div>
 
             {/* Display Headline with text-wrap: balance */}
@@ -101,7 +104,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenDonate }) => {
           <div className="lg:col-span-5 space-y-4">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-400/30 bg-stone-900 group">
               <img 
-                src={SOCIETY_INFO.bannerUrl} 
+                src={info.bannerUrl} 
                 alt="بانر جمعية الصفوة الإسلامية - أنشطة ومجالات التكافل" 
                 className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
                 loading="eager"
@@ -111,10 +114,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenDonate }) => {
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-5 text-right">
                 <div className="flex items-center justify-between text-xs text-amber-300 font-bold mb-1">
                   <span>مصر الخير .. من هنا يبدأ</span>
-                  <span className="font-mono text-emerald-300">{SOCIETY_INFO.phone}</span>
+                  <span className="font-mono text-emerald-300">{info.phone}</span>
                 </div>
                 <p className="text-[11px] text-stone-300 line-clamp-2">
-                  {SOCIETY_INFO.address}
+                  {info.address}
                 </p>
               </div>
             </div>

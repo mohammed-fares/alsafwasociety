@@ -1,21 +1,28 @@
 import React from 'react';
-import { Heart, ShoppingBag, Download, Phone, Menu, X } from 'lucide-react';
+import { Heart, ShoppingBag, Download, Phone, Menu, X, Settings } from 'lucide-react';
 import { SOCIETY_INFO } from '../data/societyData';
 
+import { SiteContentData } from '../types';
+
 interface HeaderProps {
+  content?: SiteContentData;
   onOpenDonate: (programId?: string) => void;
   onOpenCart: () => void;
   onOpenWpExport: () => void;
+  onOpenCMS: () => void;
   cartCount: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
+  content,
   onOpenDonate,
   onOpenCart,
   onOpenWpExport,
+  onOpenCMS,
   cartCount,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
 
   return (
     <>
@@ -25,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-2 text-[11px] sm:text-xs">
             <span className="font-semibold text-white">جمعية الصفوة الإسلامية</span>
             <span className="text-emerald-500 font-bold" aria-hidden="true">·</span>
-            <span className="text-emerald-200">مشهرة برقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear} - القاهرة</span>
+            <span className="text-emerald-200">مشهرة برقم {info.registrationNumber} لسنة {info.registrationYear} - القاهرة</span>
             <span className="text-emerald-500 font-bold" aria-hidden="true">·</span>
             <span className="text-amber-300 font-medium">أكثر من 33 عاماً في خدمة المجتمع</span>
           </div>
@@ -34,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Social media links */}
             <div className="flex items-center gap-2">
               <a
-                href={SOCIETY_INFO.socialLinks.facebookPage}
+                href={info.socialLinks.facebookPage}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-200 hover:text-white transition-colors"
@@ -45,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </svg>
               </a>
               <a
-                href={SOCIETY_INFO.socialLinks.facebookGroup}
+                href={info.socialLinks.facebookGroup}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-200 hover:text-amber-300 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-900/80 hover:bg-emerald-800 transition-colors"
@@ -54,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
                 جروب فيسبوك
               </a>
               <a
-                href={SOCIETY_INFO.socialLinks.youtube}
+                href={info.socialLinks.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-200 hover:text-red-400 transition-colors"
@@ -69,11 +76,11 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-emerald-700" aria-hidden="true">|</span>
 
             <a 
-              href={`tel:${SOCIETY_INFO.phone}`} 
+              href={`tel:${info.phone}`} 
               className="flex items-center gap-1.5 font-mono text-emerald-200 hover:text-white transition-colors"
             >
               <Phone className="w-3.5 h-3.5 text-amber-400" />
-              <span>{SOCIETY_INFO.phone}</span>
+              <span>{info.phone}</span>
             </a>
             <span className="text-emerald-700" aria-hidden="true">|</span>
             <span className="text-amber-300 font-serif font-bold">عطاء · تنمية · رعاية</span>
@@ -92,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="flex items-center gap-3 shrink-0 whitespace-nowrap text-inherit no-underline group"
             >
               <img 
-                src={SOCIETY_INFO.logoUrl} 
+                src={info.logoUrl} 
                 alt="شعار جمعية الصفوة الإسلامية" 
                 className="w-12 h-12 object-contain rounded-full border border-emerald-100 p-0.5 shadow-xs transition-transform group-hover:scale-105"
               />
@@ -126,8 +133,18 @@ export const Header: React.FC<HeaderProps> = ({
             </nav>
 
             {/* Zone 3: 1 primary action + WP Export and Cart icons */}
-            <div className="flex items-center gap-2.5 shrink-0">
-              {/* WordPress Theme Exporter Button */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* CMS & Media Edit Button */}
+              <button
+                onClick={onOpenCMS}
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-stone-800 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                title="تعديل الصور والمحتوى وربط ووردبريس"
+              >
+                <Settings className="w-3.5 h-3.5 text-[#0F5132]" />
+                <span className="hidden md:inline">تعديل المحتوى والصور</span>
+              </button>
+
+              {/* WordPress Theme & Plugin Exporter Button */}
               <button
                 onClick={onOpenWpExport}
                 className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
@@ -215,6 +232,17 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             <div className="pt-3 border-t border-stone-200 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenCMS();
+                }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-stone-900 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-lg"
+              >
+                <Settings className="w-4 h-4 text-[#0F5132]" />
+                <span>لوحة التحكم وتعديل المحتوى والصور (CMS)</span>
+              </button>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

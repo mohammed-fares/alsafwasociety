@@ -2,12 +2,22 @@ import React from 'react';
 import { Truck, Heart, FileText, Check, ShieldCheck } from 'lucide-react';
 import { ACTIVITIES_DATA, SOCIETY_INFO } from '../data/societyData';
 
+import { ActivityProgram, SiteContentData } from '../types';
+
 interface HearseProjectSpotlightProps {
+  content?: SiteContentData;
+  activities?: ActivityProgram[];
   onDonate: (programId: string, customAmount?: number) => void;
 }
 
-export const HearseProjectSpotlight: React.FC<HearseProjectSpotlightProps> = ({ onDonate }) => {
-  const hearseProject = ACTIVITIES_DATA.find((p) => p.id === 'hearse-project') || ACTIVITIES_DATA[1];
+export const HearseProjectSpotlight: React.FC<HearseProjectSpotlightProps> = ({ 
+  content, 
+  activities, 
+  onDonate 
+}) => {
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
+  const acts = activities || ACTIVITIES_DATA;
+  const hearseProject = acts.find((p) => p.id === 'hearse-project') || acts[1] || ACTIVITIES_DATA[1];
   const percentRaised = Math.min(100, Math.round((hearseProject.raisedAmount / hearseProject.targetAmount) * 100));
 
   const shares = [
@@ -28,7 +38,7 @@ export const HearseProjectSpotlight: React.FC<HearseProjectSpotlightProps> = ({ 
         <div className="max-w-3xl mb-12 text-right">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-400/20 border border-amber-400/40 rounded-full text-xs text-amber-300 font-bold mb-3">
             <FileText className="w-3.5 h-3.5" />
-            <span>المادة (4) من لائحة النظام الأساسي المعتمدة بتاريخ {SOCIETY_INFO.bylawApprovalDate}</span>
+            <span>المادة (4) من لائحة النظام الأساسي المعتمدة بتاريخ {info.bylawApprovalDate}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
             مشروع شراء وتجهيز سيارة نقل ودفن الموتى
@@ -37,7 +47,7 @@ export const HearseProjectSpotlight: React.FC<HearseProjectSpotlightProps> = ({ 
             </span>
           </h2>
           <p className="text-stone-300 text-sm sm:text-base leading-relaxed mt-4">
-            انطلاقاً من نص المادة الرابعة من لائحة جمعية الصفوة الإسلامية المشهرة برقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear}، تطلق الجمعية هذا المشروع الإنساني لتوفير سيارة مجهزة بأحدث وسائل الحفظ والنقل المجاني على مدار 24 ساعة للأسر المتعففة وغير القادرة بمحافظة القاهرة والمطرية وعزبة النخل.
+            انطلاقاً من نص المادة الرابعة من لائحة جمعية الصفوة الإسلامية المشهرة برقم {info.registrationNumber} لسنة {info.registrationYear}، تطلق الجمعية هذا المشروع الإنساني لتوفير سيارة مجهزة بأحدث وسائل الحفظ والنقل المجاني على مدار 24 ساعة للأسر المتعففة وغير القادرة بمحافظة القاهرة والمطرية وعزبة النخل.
           </p>
         </div>
 
@@ -145,7 +155,7 @@ export const HearseProjectSpotlight: React.FC<HearseProjectSpotlightProps> = ({ 
 
             <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-stone-500">
               <ShieldCheck className="w-4 h-4 text-emerald-700" />
-              <span>إيصال تبرع فوري وموثق بالرقم القومي والقيد {SOCIETY_INFO.registrationNumber}</span>
+              <span>إيصال تبرع فوري وموثق بالرقم القومي والقيد {info.registrationNumber}</span>
             </div>
           </div>
 

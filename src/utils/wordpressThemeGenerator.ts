@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { SOCIETY_INFO, ACTIVITIES_DATA } from '../data/societyData';
+import { SiteContentData, ActivityProgram } from '../types';
 
 export interface WPThemeFile {
   filename: string;
@@ -7,7 +8,12 @@ export interface WPThemeFile {
   content: string;
 }
 
-export function generateWordPressThemeFiles(): WPThemeFile[] {
+export function generateWordPressThemeFiles(
+  content?: SiteContentData,
+  activities?: ActivityProgram[]
+): WPThemeFile[] {
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
+  const acts = activities || ACTIVITIES_DATA;
   const styleCss = `/*
 Theme Name: جمعية الصفوة الإسلامية - Alsafwa Islamic Society
 Theme URI: ${SOCIETY_INFO.website}
@@ -611,14 +617,94 @@ License: GPLv2 or later
   ];
 }
 
-export async function downloadWordPressThemeZip(): Promise<Blob> {
+export function generateWordPressDemoXml(
+  content?: SiteContentData,
+  activities?: ActivityProgram[]
+): string {
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
+  const acts = activities || ACTIVITIES_DATA;
+
+  const itemsXml = acts.map((act, index) => `
+    <item>
+      <title>${act.title}</title>
+      <link>${info.website}/projects/${act.id}/</link>
+      <pubDate>Wed, 28 Oct 2026 12:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">${info.website}/?p=${100 + index}</guid>
+      <description></description>
+      <content:encoded><![CDATA[${act.description}]]></content:encoded>
+      <excerpt:encoded><![CDATA[${act.subtitle}]]></excerpt:encoded>
+      <wp:post_id>${100 + index}</wp:post_id>
+      <wp:post_date>2026-10-28 12:00:00</wp:post_date>
+      <wp:post_type>charity_project</wp:post_type>
+      <wp:status>publish</wp:status>
+      <wp:postmeta>
+        <wp:meta_key>alsafwa_target_amount</wp:meta_key>
+        <wp:meta_value><![CDATA[${act.targetAmount}]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+        <wp:meta_key>alsafwa_raised_amount</wp:meta_key>
+        <wp:meta_value><![CDATA[${act.raisedAmount}]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+        <wp:meta_key>alsafwa_unit_desc</wp:meta_key>
+        <wp:meta_value><![CDATA[${act.unitDescription || ''}]]></wp:meta_value>
+      </wp:postmeta>
+    </item>
+  `).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+  xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:wp="http://wordpress.org/export/1.2/"
+>
+<channel>
+  <title>${info.name}</title>
+  <link>${info.website}</link>
+  <description>${info.slogan} - مشهرة برقم ${info.registrationNumber} لسنة ${info.registrationYear}</description>
+  <pubDate>Wed, 28 Oct 2026 12:00:00 +0000</pubDate>
+  <language>ar</language>
+  <wp:wxr_version>1.2</wp:wxr_version>
+  <wp:base_site_url>${info.website}</wp:base_site_url>
+  <wp:base_blog_url>${info.website}</wp:base_blog_url>
+
+  <item>
+    <title>الرئيسية</title>
+    <link>${info.website}/</link>
+    <pubDate>Wed, 28 Oct 2026 12:00:00 +0000</pubDate>
+    <dc:creator><![CDATA[admin]]></dc:creator>
+    <guid isPermaLink="false">${info.website}/?page_id=2</guid>
+    <content:encoded><![CDATA[الصفحة الرئيسية لجمعية الصفوة الإسلامية المشهرة برقم ${info.registrationNumber}]]></content:encoded>
+    <wp:post_id>2</wp:post_id>
+    <wp:post_date>2026-10-28 12:00:00</wp:post_date>
+    <wp:post_type>page</wp:post_type>
+    <wp:status>publish</wp:status>
+  </item>
+
+  ${itemsXml}
+</channel>
+</rss>`;
+}
+
+export async function downloadWordPressThemeZip(
+  content?: SiteContentData,
+  activities?: ActivityProgram[]
+): Promise<Blob> {
   const zip = new JSZip();
   const folder = zip.folder('alsafwa-islamic-society-theme');
-  const files = generateWordPressThemeFiles();
+  const files = generateWordPressThemeFiles(content, activities);
 
   files.forEach(f => {
     folder?.file(f.filename, f.content);
   });
 
+  // Also include the demo content XML inside the zip for instant access
+  const demoXml = generateWordPressDemoXml(content, activities);
+  folder?.file('alsafwa-demo-content.xml', demoXml);
+
   return await zip.generateAsync({ type: 'blob' });
 }
+

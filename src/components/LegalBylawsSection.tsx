@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { ShieldCheck, FileText, CheckCircle2, Eye, X, Building2, MapPin, Calendar, Award } from 'lucide-react';
+import { SiteContentData } from '../types';
 import { SOCIETY_INFO } from '../data/societyData';
 
-export const LegalBylawsSection: React.FC = () => {
+interface LegalBylawsSectionProps {
+  content?: SiteContentData;
+}
+
+export const LegalBylawsSection: React.FC<LegalBylawsSectionProps> = ({ content }) => {
   const [showDocModal, setShowDocModal] = useState(false);
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
 
   return (
     <section id="bylaws" className="py-16 sm:py-24 bg-white border-b border-stone-200">
@@ -93,7 +99,7 @@ export const LegalBylawsSection: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-              {SOCIETY_INFO.articles.map((art) => (
+              {info.articles.map((art) => (
                 <div 
                   key={art.number} 
                   className="p-5 rounded-2xl bg-[#FAF8F5] border border-stone-200/90 text-right hover:border-emerald-700/30 transition-colors"
@@ -133,7 +139,7 @@ export const LegalBylawsSection: React.FC = () => {
               className="relative rounded-xl overflow-hidden border border-stone-300 group cursor-pointer shadow-xs"
             >
               <img 
-                src={SOCIETY_INFO.bylawsDocUrl} 
+                src={info.bylawsDocUrl} 
                 alt="وثيقة لائحة النظام الأساسي لجمعية الصفوة الإسلامية" 
                 className="w-full h-64 object-cover object-top group-hover:scale-105 transition-transform duration-300"
               />
@@ -190,13 +196,13 @@ export const LegalBylawsSection: React.FC = () => {
             </div>
             <div className="flex-1 overflow-auto p-4 bg-stone-100 text-center">
               <img 
-                src={SOCIETY_INFO.bylawsDocUrl} 
+                src={info.bylawsDocUrl} 
                 alt="لائحة النظام الأساسي لجمعية الصفوة الإسلامية كاملة" 
                 className="max-w-full h-auto mx-auto rounded-lg shadow-md"
               />
             </div>
             <div className="p-3 bg-stone-50 border-t border-stone-200 text-center text-xs text-stone-600">
-              لأي استفسار قانوني أو التحقق من القيد يمكن التواصل المباشر مع الجمعية على {SOCIETY_INFO.phone}
+              لأي استفسار قانوني أو التحقق من القيد يمكن التواصل المباشر مع الجمعية على {info.phone}
             </div>
           </div>
         </div>

@@ -2,22 +2,27 @@ import React, { useState } from 'react';
 import { Heart, Plus, Sparkles, Check } from 'lucide-react';
 import { ACTIVITIES_DATA } from '../data/societyData';
 
+import { ActivityProgram } from '../types';
+
 interface QuickDonationStripProps {
+  activities?: ActivityProgram[];
   onQuickDonate: (programId: string, amount: number, isMonthly: boolean) => void;
   onAddToCart: (programId: string, amount: number, isMonthly: boolean) => void;
 }
 
 export const QuickDonationStrip: React.FC<QuickDonationStripProps> = ({
+  activities,
   onQuickDonate,
   onAddToCart,
 }) => {
-  const [selectedProgramId, setSelectedProgramId] = useState<string>(ACTIVITIES_DATA[0].id);
+  const acts = activities && activities.length > 0 ? activities : ACTIVITIES_DATA;
+  const [selectedProgramId, setSelectedProgramId] = useState<string>(acts[0].id);
   const [amount, setAmount] = useState<number>(250);
   const [customAmount, setCustomAmount] = useState<string>('');
   const [isMonthly, setIsMonthly] = useState<boolean>(false);
   const [addedFeedback, setAddedFeedback] = useState<boolean>(false);
 
-  const selectedProgram = ACTIVITIES_DATA.find((p) => p.id === selectedProgramId) || ACTIVITIES_DATA[0];
+  const selectedProgram = acts.find((p) => p.id === selectedProgramId) || acts[0];
   const quickAmounts = [50, 100, 250, 500, 1000];
 
   const handleAmountClick = (val: number) => {

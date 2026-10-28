@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, MessageSquare, Send, CheckCircle2 } from 'lucide-react';
 import { SOCIETY_INFO } from '../data/societyData';
+import { SiteContentData } from '../types';
 
-export const ContactSection: React.FC = () => {
+interface ContactSectionProps {
+  content?: SiteContentData;
+}
+
+export const ContactSection: React.FC<ContactSectionProps> = ({ content }) => {
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
   const [senderName, setSenderName] = useState('');
   const [senderPhone, setSenderPhone] = useState('');
   const [subject, setSubject] = useState('استفسار عن التبرعات');
@@ -73,11 +79,11 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <span className="block text-xs font-bold text-stone-800">الهاتف والواتساب الموحد:</span>
-                  <a href={`tel:${SOCIETY_INFO.phone}`} className="font-mono text-sm font-bold text-[#0F5132] hover:underline block mt-0.5">
-                    {SOCIETY_INFO.phone}
+                  <a href={`tel:${info.phone}`} className="font-mono text-sm font-bold text-[#0F5132] hover:underline block mt-0.5">
+                    {info.phone}
                   </a>
                   <a 
-                    href={SOCIETY_INFO.whatsappUrl} 
+                    href={info.whatsappUrl || `https://wa.me/20${info.phone.replace(/^0/, '')}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="inline-block text-[11px] text-emerald-700 font-bold hover:underline mt-1"
@@ -94,7 +100,7 @@ export const ContactSection: React.FC = () => {
                 <div className="text-right">
                   <span className="block text-xs font-bold text-stone-800">البريد الإلكتروني:</span>
                   <span className="font-mono text-xs text-stone-600 block mt-0.5">
-                    {SOCIETY_INFO.email}
+                    {info.email}
                   </span>
                 </div>
               </div>
@@ -106,7 +112,7 @@ export const ContactSection: React.FC = () => {
                 <div className="text-right">
                   <span className="block text-xs font-bold text-stone-800">مواعيد العمل واستقبال الزوار:</span>
                   <p className="text-xs text-stone-600 mt-0.5">
-                    {SOCIETY_INFO.workHours}
+                    {info.workHours}
                   </p>
                 </div>
               </div>
@@ -116,7 +122,7 @@ export const ContactSection: React.FC = () => {
                 <span className="block text-xs font-bold text-stone-800 mb-2">تابعوا الجمعية على المنصات الرسمية:</span>
                 <div className="flex flex-wrap items-center gap-2">
                   <a
-                    href={SOCIETY_INFO.socialLinks.facebookPage}
+                    href={info.socialLinks.facebookPage}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 text-[#1877F2] rounded-lg text-xs font-bold transition-colors"
@@ -128,7 +134,7 @@ export const ContactSection: React.FC = () => {
                   </a>
 
                   <a
-                    href={SOCIETY_INFO.socialLinks.facebookGroup}
+                    href={info.socialLinks.facebookGroup}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-[#0F5132] rounded-lg text-xs font-bold transition-colors"
@@ -137,7 +143,7 @@ export const ContactSection: React.FC = () => {
                   </a>
 
                   <a
-                    href={SOCIETY_INFO.socialLinks.youtube}
+                    href={info.socialLinks.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-bold transition-colors"
@@ -154,7 +160,7 @@ export const ContactSection: React.FC = () => {
             {/* Registration Trust Box */}
             <div className="p-4 rounded-xl bg-emerald-950 text-white border border-emerald-900 text-xs flex items-center justify-between">
               <div>
-                <span className="block text-amber-300 font-bold">قيد رقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear}</span>
+                <span className="block text-amber-300 font-bold">قيد رقم {info.registrationNumber} لسنة {info.registrationYear}</span>
                 <span className="text-stone-300 text-[11px]">وزارة التضامن الاجتماعي - مديرية القاهرة</span>
               </div>
               <span className="text-xs font-mono font-bold text-emerald-300">منذ 1991</span>
@@ -240,7 +246,7 @@ export const ContactSection: React.FC = () => {
                 className="w-full py-3.5 px-6 bg-[#0F5132] hover:bg-[#0A3622] text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Send className="w-4 h-4 text-amber-300" />
-                <span>إرسال مباشرة عبر واتساب الجمعية ({SOCIETY_INFO.phone})</span>
+                <span>إرسال مباشرة عبر واتساب الجمعية ({info.phone})</span>
               </button>
             </form>
           </div>

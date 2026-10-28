@@ -14,11 +14,13 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ACTIVITIES_DATA, SOCIETY_INFO } from '../data/societyData';
-import { PaymentMethodType, DonationReceiptData } from '../types';
+import { PaymentMethodType, DonationReceiptData, SiteContentData, ActivityProgram } from '../types';
 
 interface DonationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  content?: SiteContentData;
+  activities?: ActivityProgram[];
   initialProgramId?: string;
   initialAmount?: number;
   initialIsMonthly?: boolean;
@@ -28,13 +30,17 @@ interface DonationModalProps {
 export const DonationModal: React.FC<DonationModalProps> = ({
   isOpen,
   onClose,
+  content,
+  activities,
   initialProgramId,
   initialAmount = 250,
   initialIsMonthly = false,
   onDonationComplete,
 }) => {
+  const info = content || (SOCIETY_INFO as unknown as SiteContentData);
+  const acts = activities && activities.length > 0 ? activities : ACTIVITIES_DATA;
   const [selectedProgramId, setSelectedProgramId] = useState<string>(
-    initialProgramId || ACTIVITIES_DATA[0].id
+    initialProgramId || acts[0].id
   );
   const [amount, setAmount] = useState<number>(initialAmount);
   const [customAmount, setCustomAmount] = useState<string>('');
@@ -57,7 +63,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
   if (!isOpen) return null;
 
-  const currentProgram = ACTIVITIES_DATA.find((p) => p.id === selectedProgramId) || ACTIVITIES_DATA[0];
+  const currentProgram = acts.find((p) => p.id === selectedProgramId) || acts[0];
   const quickAmounts = currentProgram.defaultAmounts || [50, 100, 250, 500, 1000];
 
   const handleCopy = (text: string, key: string) => {
@@ -177,7 +183,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
               onChange={(e) => setSelectedProgramId(e.target.value)}
               className="w-full bg-[#FAF8F5] border border-stone-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-stone-800 focus:outline-hidden focus:ring-2 focus:ring-[#0F5132]"
             >
-              {ACTIVITIES_DATA.map((prog) => (
+              {acts.map((prog) => (
                 <option key={prog.id} value={prog.id}>
                   {prog.title} - ({prog.category})
                 </option>
