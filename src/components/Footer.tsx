@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Download, Heart, ShieldCheck } from 'lucide-react';
+import { Phone, Mail, MapPin, Download, Heart, ShieldCheck, Lock } from 'lucide-react';
 import { SiteContentData } from '../types';
 import { SOCIETY_INFO } from '../data/societyData';
 
@@ -7,9 +7,15 @@ interface FooterProps {
   content?: SiteContentData;
   onOpenDonate: () => void;
   onOpenWpExport: () => void;
+  onOpenAdminLogin?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ content, onOpenDonate, onOpenWpExport }) => {
+export const Footer: React.FC<FooterProps> = ({
+  content,
+  onOpenDonate,
+  onOpenWpExport,
+  onOpenAdminLogin,
+}) => {
   const info = content || (SOCIETY_INFO as unknown as SiteContentData);
   return (
     <footer className="bg-[#052316] text-stone-300 pt-16 pb-10 border-t-4 border-[#C5A059]">
@@ -193,18 +199,39 @@ export const Footer: React.FC<FooterProps> = ({ content, onOpenDonate, onOpenWpE
 
         </div>
 
-        {/* Bottom Bar: Copyright & Quranic Quote */}
+        {/* Bottom Bar: Copyright, Hidden Admin Access & Quranic Quote */}
         <div className="pt-8 border-t border-emerald-900/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-400">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <p>
-              © {new Date().getFullYear()} جمعية الصفوة الإسلامية - مشهرة برقم {info.registrationNumber} لسنة {info.registrationYear}. جميع الحقوق محفوظة.
-            </p>
+            {/* Hidden entry for General Manager: Clicking the official badge/copyright opens the password-protected login */}
+            <button
+              onClick={onOpenAdminLogin}
+              className="flex items-center gap-2 text-stone-400 hover:text-stone-300 transition-colors text-right cursor-pointer group focus:outline-none"
+              title="البيانات القانونية المعتمدة"
+              aria-label="البيانات القانونية"
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-500 group-hover:text-emerald-400 transition-colors shrink-0" />
+              <span>
+                © {new Date().getFullYear()} جمعية الصفوة الإسلامية - مشهرة برقم {info.registrationNumber} لسنة {info.registrationYear}. جميع الحقوق محفوظة.
+              </span>
+            </button>
           </div>
           
-          <p className="font-serif text-sm text-amber-300 font-bold">
-            "وَمَا تُقَدِّمُوا لِأَنفُسِكُم مِّنْ خَيْرٍ تَجِدُوهُ عِندَ اللَّهِ"
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="font-serif text-sm text-amber-300 font-bold">
+              "وَمَا تُقَدِّمُوا لِأَنفُسِكُم مِّنْ خَيْرٍ تَجِدُوهُ عِندَ اللَّهِ"
+            </p>
+            {/* Ultra-discreet concealed lock: invisible to standard visitors, accessible to the General Manager */}
+            {onOpenAdminLogin && (
+              <button
+                onClick={onOpenAdminLogin}
+                className="opacity-10 hover:opacity-80 transition-opacity p-1 text-stone-500 hover:text-amber-400 cursor-pointer rounded focus:outline-none"
+                title="إدارة النظام (المدير العام)"
+                aria-label="المدير العام"
+              >
+                <Lock className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </div>
 
       </div>

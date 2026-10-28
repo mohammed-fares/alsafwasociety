@@ -12,6 +12,7 @@ import { DonationReceiptModal } from './components/DonationReceiptModal';
 import { DonationCartDrawer } from './components/DonationCartDrawer';
 import { WordPressExportModal } from './components/WordPressExportModal';
 import { AdminCMSModal } from './components/AdminCMSModal';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import { ServiceDetailModal } from './components/ServiceDetailModal';
 import { 
   DonationCartItem, 
@@ -106,7 +107,40 @@ export default function App() {
   
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [wpExportModalOpen, setWpExportModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [cmsModalOpen, setCmsModalOpen] = useState(false);
+  
+  // Admin password (Persistent with default fallback)
+  const [adminPassword, setAdminPassword] = useState<string>(() => {
+    try {
+      const savedPass = localStorage.getItem('alsafwa_admin_password');
+      if (savedPass) return savedPass;
+    } catch (e) {
+      console.error(e);
+    }
+    return 'safwa2026';
+  });
+
+  // Global Keyboard Shortcut (Ctrl+Shift+A or Alt+A) to open Admin Login
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        setLoginModalOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleUpdatePassword = (newPassword: string) => {
+    setAdminPassword(newPassword);
+    try {
+      localStorage.setItem('alsafwa_admin_password', newPassword);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   
   // Selected Program for Service Detail & Beneficiary Request Modal
   const [detailProgram, setDetailProgram] = useState<ActivityProgram | null>(null);
@@ -238,13 +272,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-stone-900 flex flex-col font-sans selection:bg-[#0F5132]/20 selection:text-[#0F5132]">
-      {/* Header with Top Bar Contract & CMS trigger */}
+      {/* Header with Navigation and WordPress Export */}
       <Header
         content={siteContent}
         onOpenDonate={() => handleOpenDonate()}
         onOpenCart={() => setCartDrawerOpen(true)}
         onOpenWpExport={() => setWpExportModalOpen(true)}
-        onOpenCMS={() => setCmsModalOpen(true)}
         cartCount={cartItems.length}
       />
 
@@ -286,11 +319,12 @@ export default function App() {
         <ContactSection content={siteContent} />
       </main>
 
-      {/* Footer */}
+      {/* Footer with Discreet General Manager CMS Access */}
       <Footer
         content={siteContent}
         onOpenDonate={() => handleOpenDonate()}
         onOpenWpExport={() => setWpExportModalOpen(true)}
+        onOpenAdminLogin={() => setLoginModalOpen(true)}
       />
 
       {/* Donation Checkout Modal */}
@@ -339,6 +373,17 @@ export default function App() {
         onSubmitBeneficiaryRequest={handleBeneficiarySubmit}
       />
 
+      {/* Admin Login Modal (Password Protected) */}
+      <AdminLoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onSuccess={() => {
+          setLoginModalOpen(false);
+          setCmsModalOpen(true);
+        }}
+        currentPassword={adminPassword}
+      />
+
       {/* Content & Media Management CMS Panel */}
       <AdminCMSModal
         isOpen={cmsModalOpen}
@@ -352,6 +397,8 @@ export default function App() {
         wpConfig={wpConfig}
         onSaveWpConfig={handleSaveWpConfig}
         onResetToDefault={handleResetToDefault}
+        currentPassword={adminPassword}
+        onUpdatePassword={handleUpdatePassword}
       />
     </div>
   );

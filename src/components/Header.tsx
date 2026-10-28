@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, ShoppingBag, Download, Phone, Menu, X, Settings } from 'lucide-react';
+import { Heart, ShoppingBag, Download, Phone, Menu, X } from 'lucide-react';
 import { SOCIETY_INFO } from '../data/societyData';
 
 import { SiteContentData } from '../types';
@@ -9,7 +9,6 @@ interface HeaderProps {
   onOpenDonate: (programId?: string) => void;
   onOpenCart: () => void;
   onOpenWpExport: () => void;
-  onOpenCMS: () => void;
   cartCount: number;
 }
 
@@ -18,7 +17,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenDonate,
   onOpenCart,
   onOpenWpExport,
-  onOpenCMS,
   cartCount,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -134,16 +132,6 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Zone 3: 1 primary action + WP Export and Cart icons */}
             <div className="flex items-center gap-2 shrink-0">
-              {/* CMS & Media Edit Button */}
-              <button
-                onClick={onOpenCMS}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-stone-800 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-                title="تعديل الصور والمحتوى وربط ووردبريس"
-              >
-                <Settings className="w-3.5 h-3.5 text-[#0F5132]" />
-                <span className="hidden md:inline">تعديل المحتوى والصور</span>
-              </button>
-
               {/* WordPress Theme & Plugin Exporter Button */}
               <button
                 onClick={onOpenWpExport}
@@ -232,17 +220,6 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             <div className="pt-3 border-t border-stone-200 flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenCMS();
-                }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-bold text-stone-900 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-lg"
-              >
-                <Settings className="w-4 h-4 text-[#0F5132]" />
-                <span>لوحة التحكم وتعديل المحتوى والصور (CMS)</span>
-              </button>
-
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
