@@ -130,7 +130,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
         paymentMethod: paymentMethod,
         paymentReference: `TX-${Math.floor(10000000 + Math.random() * 90000000)}`,
         status: 'confirmed',
-        bylawReference: 'جمعية الصفوة الإسلامية - قيد رقم 3744 لسنة 1991',
+        bylawReference: 'جمعية الصفوة الإسلامية - قيد رقم 3794 لسنة 1991',
       };
 
       setIsSubmitting(false);
@@ -152,7 +152,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
             <div>
               <h3 className="text-lg font-bold text-white">بوابة التبرع المباشر</h3>
               <p className="text-xs text-emerald-300">
-                جمعية الصفوة الإسلامية · قيد 3744 لسنة 1991
+                جمعية الصفوة الإسلامية · قيد 3794 لسنة 1991
               </p>
             </div>
           </div>
@@ -523,7 +523,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
             </button>
             <div className="flex items-center justify-center gap-2 mt-3 text-[11px] text-stone-500">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
-              <span>إيصالك الرقمي موثق رسمياً برقم قيد الجمعية 3744 لسنة 1991</span>
+              <span>إيصالك الرقمي موثق رسمياً برقم قيد الجمعية 3794 لسنة 1991</span>
             </div>
           </div>
 

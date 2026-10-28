@@ -19,7 +19,7 @@ export const LegalBylawsSection: React.FC = () => {
             البيانات الأساسية ولائحة النظام الأساسي
           </h2>
           <p className="text-sm sm:text-base text-stone-600 leading-relaxed mt-3">
-            جمعية مشهرة بمديرية التضامن الاجتماعي بالقاهرة برقم 3744 لسنة 1991 وتخضع لإشراف إدارة المطرية الاجتماعية، وتلتزم بأعلى معايير الحوكمة والنزاهة المالية.
+            جمعية مشهرة بمديرية التضامن الاجتماعي بالقاهرة برقم 3794 لسنة 1991 وتخضع لإشراف إدارة المطرية الاجتماعية، وتلتزم بأعلى معايير الحوكمة والنزاهة المالية.
           </p>
         </div>
 
@@ -29,7 +29,7 @@ export const LegalBylawsSection: React.FC = () => {
           <div className="bg-[#FAF8F5] border border-stone-200 rounded-2xl p-5 text-center shadow-xs">
             <Award className="w-6 h-6 text-[#0F5132] mx-auto mb-2" />
             <span className="block text-2xl sm:text-3xl font-black text-[#0F5132] font-mono">
-              3744
+              3794
             </span>
             <span className="block text-xs font-bold text-stone-700 mt-1">
               رقم القيد الرسمي
@@ -175,7 +175,7 @@ export const LegalBylawsSection: React.FC = () => {
             <div className="flex items-center justify-between p-4 border-b border-stone-200">
               <div className="text-right">
                 <h4 className="text-base font-bold text-stone-900">
-                  وثيقة النظام الأساسي الرسمية - جمعية الصفوة الإسلامية (قيد 3744 لسنة 1991)
+                  وثيقة النظام الأساسي الرسمية - جمعية الصفوة الإسلامية (قيد 3794 لسنة 1991)
                 </h4>
                 <p className="text-xs text-stone-500">
                   إدارة المطرية الاجتماعية - تاريخ الاعتماد 03/07/2023

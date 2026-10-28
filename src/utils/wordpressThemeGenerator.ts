@@ -13,7 +13,7 @@ Theme Name: جمعية الصفوة الإسلامية - Alsafwa Islamic Society
 Theme URI: ${SOCIETY_INFO.website}
 Author: جمعية الصفوة الإسلامية
 Author URI: ${SOCIETY_INFO.website}
-Description: قالب ووردبريس رسمي متكامل لجمعية الصفوة الإسلامية المشهرة برقم 3744 لسنة 1991 بالقاهرة. يدعم نظام التبرعات الإلكتروني، كفالة الأيتام، مشروع سيارة إكرام الموتى، دعم كامل للغة العربية (RTL)، وتصميم متجاوب مع جميع الأجهزة والشاشات.
+Description: قالب ووردبريس رسمي متكامل لجمعية الصفوة الإسلامية المشهرة برقم 3794 لسنة 1991 بالقاهرة. يدعم نظام التبرعات الإلكتروني، كفالة الأيتام، مشروع سيارة إكرام الموتى، دعم كامل للغة العربية (RTL)، وتصميم متجاوب مع جميع الأجهزة والشاشات.
 Version: 1.0.0
 Requires at least: 6.0
 Tested up to: 6.7
@@ -133,7 +133,7 @@ body {
 /**
  * Alsafwa Islamic Society Theme Functions
  * Theme Name: جمعية الصفوة الإسلامية
- * Registration No: 3744 لسنة 1991
+ * Registration No: 3794 لسنة 1991
  */
 
 if (!defined('ABSPATH')) {
@@ -208,7 +208,7 @@ function alsafwa_donate_box_shortcode($atts) {
     ?>
     <div class="bg-white border border-emerald-100 rounded-2xl p-6 shadow-sm my-6" dir="rtl">
         <h3 class="text-xl font-bold text-emerald-900 mb-2">تبرع مباشر لجمعية الصفوة الإسلامية</h3>
-        <p class="text-sm text-gray-600 mb-4">مشهرة برقم 3744 لسنة 1991 - القاهرة</p>
+        <p class="text-sm text-gray-600 mb-4">مشهرة برقم 3794 لسنة 1991 - القاهرة</p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div class="p-3 bg-emerald-50 rounded-lg">
                 <span class="font-bold text-emerald-800">إنستاباي InstaPay:</span>
@@ -247,7 +247,7 @@ add_shortcode('alsafwa_donate_box', 'alsafwa_donate_box_shortcode');
         <div class="flex items-center gap-3">
             <span>جمعية الصفوة الإسلامية</span>
             <span class="text-emerald-400">·</span>
-            <span>مشهرة برقم 3744 لسنة 1991 - القاهرة - المطرية</span>
+            <span>مشهرة برقم 3794 لسنة 1991 - القاهرة - المطرية</span>
             <span class="text-emerald-400">·</span>
             <span>منذ 1991 في خدمة المجتمع</span>
         </div>
@@ -310,7 +310,7 @@ add_shortcode('alsafwa_donate_box', 'alsafwa_donate_box_shortcode');
                     </div>
                 </div>
                 <p class="text-xs text-gray-300 leading-relaxed mb-4">
-                    جمعية أهلية مصرية مشهرة برقم 3744 لسنة 1991 بإدارة المطرية - القاهرة. تعمل منذ أكثر من 33 عاماً في رعاية الأيتام، الخدمات الصحية، تحفيظ القرآن، ومساعدة الأسر المتعففة.
+                    جمعية أهلية مصرية مشهرة برقم 3794 لسنة 1991 بإدارة المطرية - القاهرة. تعمل منذ أكثر من 33 عاماً في رعاية الأيتام، الخدمات الصحية، تحفيظ القرآن، ومساعدة الأسر المتعففة.
                 </p>
                 <div class="text-xs text-emerald-300 font-mono">
                     تاريخ اعتماد اللائحة: ${SOCIETY_INFO.bylawApprovalDate}
@@ -373,7 +373,7 @@ add_shortcode('alsafwa_donate_box', 'alsafwa_donate_box_shortcode');
         </div>
 
         <div class="pt-8 border-t border-emerald-900/80 text-center text-xs text-gray-400 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>© <?php echo date('Y'); ?> جمعية الصفوة الإسلامية - قيد 3744 لسنة 1991. جميع الحقوق محفوظة.</p>
+            <p>© <?php echo date('Y'); ?> جمعية الصفوة الإسلامية - قيد 3794 لسنة 1991. جميع الحقوق محفوظة.</p>
             <p class="text-amber-400/90 font-serif text-sm">"وَمَا تُقَدِّمُوا لِأَنفُسِكُم مِّنْ خَيْرٍ تَجِدُوهُ عِندَ اللَّهِ"</p>
         </div>
     </div>
@@ -399,7 +399,7 @@ get_header();
             
             <div class="lg:col-span-7 space-y-6 text-right">
                 <div class="inline-block bg-emerald-950/70 border border-amber-400/30 px-4 py-1.5 rounded-full text-xs text-amber-300 font-semibold">
-                    مشهرة برقم 3744 لسنة 1991 - إدارة المطرية - القاهرة
+                    مشهرة برقم 3794 لسنة 1991 - إدارة المطرية - القاهرة
                 </div>
 
                 <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-white">
@@ -460,7 +460,7 @@ get_header();
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 text-center">
             <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                <span class="block text-2xl font-black text-emerald-800 font-mono">3744</span>
+                <span class="block text-2xl font-black text-emerald-800 font-mono">3794</span>
                 <span class="text-xs text-gray-600 font-medium">رقم القيد الرسمي</span>
             </div>
             <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
@@ -576,7 +576,7 @@ Tested up to: 6.7
 Stable tag: 1.0.0
 License: GPLv2 or later
 
-قالب ووردبريس متكامل ورسمي لجمعية الصفوة الإسلامية المشهرة برقم 3744 لسنة 1991.
+قالب ووردبريس متكامل ورسمي لجمعية الصفوة الإسلامية المشهرة برقم 3794 لسنة 1991.
 
 == طريقة التركيب على موقع ووردبريس (WordPress Installation) ==
 

@@ -6,7 +6,7 @@ export const SOCIETY_INFO = {
   slogan: 'معاً .. لبناء مجتمع أكثر تكافلاً',
   subSlogan: 'عطاء | تنمية | رعاية',
   establishedYear: '1991',
-  registrationNumber: '3744',
+  registrationNumber: '3794',
   registrationYear: '1991',
   governorate: 'القاهرة',
   administration: 'إدارة المطرية',
@@ -22,6 +22,13 @@ export const SOCIETY_INFO = {
   bannerUrl: '/assets/aistudio/Untitled11_98fd3863.jpeg',
   bannerSecondaryUrl: '/assets/aistudio/Untitled2_6b85ecc2.jpeg',
   bylawsDocUrl: '/assets/aistudio/5942f206-0ed4-4b93-b7d6-1eafe9551924_fa99acd6.png',
+
+  // Official Social Media Links
+  socialLinks: {
+    facebookPage: 'https://www.facebook.com/profile.php?id=61595649184302',
+    facebookGroup: 'https://www.facebook.com/groups/1409456344509964/',
+    youtube: 'https://www.youtube.com/channel/UCAoybAVU121z5BCChObZMQw',
+  },
   
   // Official Legal Bylaws Articles (من لائحة النظام الأساسي)
   articles: [
@@ -64,14 +71,14 @@ export const SOCIETY_INFO = {
         accountNumber: '10912384758001',
         iban: 'EG9400030109123847580010001',
         swift: 'NBEGEGCX',
-        beneficiary: 'جمعية الصفوة الإسلامية - قيد 3744',
+        beneficiary: 'جمعية الصفوة الإسلامية - قيد 3794',
       },
       {
         bankName: 'بنك مصر (Banque Misr)',
         accountNumber: '34800010009841',
         iban: 'EG3200020348000100098410001',
         swift: 'BMISEGCX',
-        beneficiary: 'جمعية الصفوة الإسلامية - قيد 3744',
+        beneficiary: 'جمعية الصفوة الإسلامية - قيد 3794',
       },
     ],
   },

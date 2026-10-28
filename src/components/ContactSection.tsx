@@ -110,12 +110,51 @@ export const ContactSection: React.FC = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Social Media Links */}
+              <div className="pt-3 border-t border-stone-200">
+                <span className="block text-xs font-bold text-stone-800 mb-2">تابعوا الجمعية على المنصات الرسمية:</span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <a
+                    href={SOCIETY_INFO.socialLinks.facebookPage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 text-[#1877F2] rounded-lg text-xs font-bold transition-colors"
+                  >
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>صفحة الفيسبوك</span>
+                  </a>
+
+                  <a
+                    href={SOCIETY_INFO.socialLinks.facebookGroup}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-[#0F5132] rounded-lg text-xs font-bold transition-colors"
+                  >
+                    <span>جروب الفيسبوك</span>
+                  </a>
+
+                  <a
+                    href={SOCIETY_INFO.socialLinks.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-xs font-bold transition-colors"
+                  >
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    <span>قناة يوتيوب</span>
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* Registration Trust Box */}
             <div className="p-4 rounded-xl bg-emerald-950 text-white border border-emerald-900 text-xs flex items-center justify-between">
               <div>
-                <span className="block text-amber-300 font-bold">قيد رقم 3744 لسنة 1991</span>
+                <span className="block text-amber-300 font-bold">قيد رقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear}</span>
                 <span className="text-stone-300 text-[11px]">وزارة التضامن الاجتماعي - مديرية القاهرة</span>
               </div>
               <span className="text-xs font-mono font-bold text-emerald-300">منذ 1991</span>

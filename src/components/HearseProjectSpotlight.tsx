@@ -37,7 +37,7 @@ export const HearseProjectSpotlight: React.FC<HearseProjectSpotlightProps> = ({ 
             </span>
           </h2>
           <p className="text-stone-300 text-sm sm:text-base leading-relaxed mt-4">
-            انطلاقاً من نص المادة الرابعة من لائحة جمعية الصفوة الإسلامية المشهرة برقم 3744 لسنة 1991، تطلق الجمعية هذا المشروع الإنساني لتوفير سيارة مجهزة بأحدث وسائل الحفظ والنقل المجاني على مدار 24 ساعة للأسر المتعففة وغير القادرة بمحافظة القاهرة والمطرية وعزبة النخل.
+            انطلاقاً من نص المادة الرابعة من لائحة جمعية الصفوة الإسلامية المشهرة برقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear}، تطلق الجمعية هذا المشروع الإنساني لتوفير سيارة مجهزة بأحدث وسائل الحفظ والنقل المجاني على مدار 24 ساعة للأسر المتعففة وغير القادرة بمحافظة القاهرة والمطرية وعزبة النخل.
           </p>
         </div>
 
@@ -145,7 +145,7 @@ export const HearseProjectSpotlight: React.FC<HearseProjectSpotlightProps> = ({ 
 
             <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-stone-500">
               <ShieldCheck className="w-4 h-4 text-emerald-700" />
-              <span>إيصال تبرع فوري وموثق بالرقم القومي والقيد 3744</span>
+              <span>إيصال تبرع فوري وموثق بالرقم القومي والقيد {SOCIETY_INFO.registrationNumber}</span>
             </div>
           </div>
 

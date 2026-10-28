@@ -171,7 +171,7 @@ export const DonationReceiptModal: React.FC<DonationReceiptModalProps> = ({
             {/* Circular Official Society Seal */}
             <div className="w-24 h-24 rounded-full border-2 border-dashed border-[#0F5132] p-1 flex flex-col items-center justify-center text-center text-[#0F5132] rotate-6 bg-white/80 shadow-xs">
               <span className="text-[9px] font-bold">جمعية الصفوة الإسلامية</span>
-              <span className="text-[11px] font-black font-mono my-0.5">قيد 3744</span>
+              <span className="text-[11px] font-black font-mono my-0.5">قيد {SOCIETY_INFO.registrationNumber}</span>
               <span className="text-[8px] font-semibold">إدارة المطرية - القاهرة</span>
             </div>
           </div>

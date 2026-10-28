@@ -25,12 +25,49 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-2 text-[11px] sm:text-xs">
             <span className="font-semibold text-white">جمعية الصفوة الإسلامية</span>
             <span className="text-emerald-500 font-bold" aria-hidden="true">·</span>
-            <span className="text-emerald-200">مشهرة برقم 3744 لسنة 1991 - القاهرة</span>
+            <span className="text-emerald-200">مشهرة برقم {SOCIETY_INFO.registrationNumber} لسنة {SOCIETY_INFO.registrationYear} - القاهرة</span>
             <span className="text-emerald-500 font-bold" aria-hidden="true">·</span>
             <span className="text-amber-300 font-medium">أكثر من 33 عاماً في خدمة المجتمع</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px] sm:text-xs">
+            {/* Social media links */}
+            <div className="flex items-center gap-2">
+              <a
+                href={SOCIETY_INFO.socialLinks.facebookPage}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-200 hover:text-white transition-colors"
+                title="صفحة الجمعية الرسمية على فيسبوك"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </a>
+              <a
+                href={SOCIETY_INFO.socialLinks.facebookGroup}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-200 hover:text-amber-300 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-900/80 hover:bg-emerald-800 transition-colors"
+                title="جروب الجمعية على فيسبوك"
+              >
+                جروب فيسبوك
+              </a>
+              <a
+                href={SOCIETY_INFO.socialLinks.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-200 hover:text-red-400 transition-colors"
+                title="قناة الجمعية على يوتيوب"
+              >
+                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </a>
+            </div>
+
+            <span className="text-emerald-700" aria-hidden="true">|</span>
+
             <a 
               href={`tel:${SOCIETY_INFO.phone}`} 
               className="flex items-center gap-1.5 font-mono text-emerald-200 hover:text-white transition-colors"
