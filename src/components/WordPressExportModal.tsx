@@ -240,7 +240,7 @@ export const WordPressExportModal: React.FC<WordPressExportModalProps> = ({
                     قالب جمعية الصفوة: alsafwa-islamic-society-theme.zip
                   </h4>
                   <p className="text-xs sm:text-sm text-stone-200 leading-relaxed max-w-xl">
-                    يحتوي على كافة ملفات القالب (`style.css`, `front-page.php`, `header.php`, `footer.php`, `functions.php`) متضمناً كامل الأنشطة الـ 11 ومشروع سيارة إكرام الموتى (المادة 4) ودعم كامل لمخصص ووردبريس.
+                    يحتوي على كافة ملفات القالب متضمناً <strong>لوحة التحكم وإدارة المحتوى الشاملة المدمجة (WordPress Admin CMS Panel)</strong> في `inc/admin-cms.php` وكافة الأنشطة الـ 11 ومشروع سيارة إكرام الموتى (المادة 4) والحسابات البنكية والمحفظة الإلكترونية.
                   </p>
                 </div>
 
@@ -387,6 +387,35 @@ export const WordPressExportModal: React.FC<WordPressExportModalProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 
+                {/* Control 0: Full WordPress Admin CMS Panel */}
+                <div className="p-5 bg-white border-2 border-emerald-600 rounded-2xl shadow-sm space-y-2 col-span-1 md:col-span-2">
+                  <div className="flex items-center gap-2">
+                    <span className="p-2 bg-emerald-100 text-[#0F5132] rounded-lg">
+                      <Settings2 className="w-5 h-5" />
+                    </span>
+                    <div>
+                      <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 inline-block mb-1">جديد ومدمج داخل القالب تلقائياً</span>
+                      <h5 className="text-base font-black text-stone-900">
+                        لوحة تحكم وإدارة المحتوى والصور (WordPress Admin CMS Panel)
+                      </h5>
+                    </div>
+                  </div>
+                  <p className="text-xs text-stone-600 leading-relaxed">
+                    ملف مدمج أصلي (`inc/admin-cms.php`) يضيف قائمة رئيسية في لوحة تحكم ووردبريس باسم <strong>"لوحة تحكم جمعية الصفوة (CMS)"</strong> تمكن الإدارة من:
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs text-stone-700">
+                    <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200">
+                      <strong>🏛️ البيانات الأساسية واللائحة:</strong> تعديل اسم الجمعية، رقم القيد 3794، نص المادة 1، ونص المادة 4، ورفع وتغيير اللوجو مباشرة من مكتبة وسائط ووردبريس.
+                    </div>
+                    <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200">
+                      <strong>🚐 سيارة الموتى والـ 11 نشاطاً:</strong> تعديل مستهدفات التبرع، المبالغ المجمعة، العناوين، وإضافة أنشطة ومشاريع خيرية جديدة تظهر فوراً بالصفحة الرئيسية.
+                    </div>
+                    <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200">
+                      <strong>💳 الحسابات والسوشيال:</strong> تعديل معرف إنستاباي، رقم المحفظة الإلكترونية، حسابات البنك الأهلي وبنك مصر، وروابط الفيسبوك واليوتيوب والواتساب.
+                    </div>
+                  </div>
+                </div>
+
                 {/* Control 1: Customizer */}
                 <div className="p-5 bg-white border border-stone-200 rounded-2xl shadow-xs space-y-2">
                   <div className="flex items-center gap-2">
@@ -404,7 +433,7 @@ export const WordPressExportModal: React.FC<WordPressExportModalProps> = ({
                     <li>تغيير شعار الجمعية (اللوجو) والصور والبانرات الترويجية.</li>
                     <li>تعديل رقم القيد الرسمي (<strong>3794</strong>) وسنة الإشهار (1991).</li>
                     <li>تعديل الهاتف الموحد والواتساب (<strong>01115947455</strong>) ومقر الجمعية.</li>
-                    <li>تحديث معرف إنستاباي ومحفظة فودافون كاش والحسابات البنكية.</li>
+                    <li>تحديث معرف إنستاباي ورقم المحفظة الإلكترونية والحسابات البنكية.</li>
                     <li>روابط السوشيال ميديا (صفحة وجروب الفيسبوك، وقناة اليوتيوب).</li>
                   </ul>
                 </div>
@@ -467,7 +496,7 @@ export const WordPressExportModal: React.FC<WordPressExportModalProps> = ({
                   <ul className="text-xs text-stone-700 space-y-1 pt-1 list-disc list-inside">
                     <li>توليد أرقام إيصالات رسمية متسلسلة تحمل خاتم الجمعية ورقم القيد 3794.</li>
                     <li>إمكانية إعادة طباعة أي إيصال أو إرساله للمتبرع كـ PDF أو عبر واتساب.</li>
-                    <li>فلترة التبرعات بحسب المشروع أو وسيلة الدفع (إنستاباي / فودافون / بنك).</li>
+                    <li>فلترة التبرعات بحسب المشروع أو وسيلة الدفع (إنستاباي / المحفظة الإلكترونية / بنك).</li>
                   </ul>
                 </div>
 
@@ -595,7 +624,7 @@ export const WordPressExportModal: React.FC<WordPressExportModalProps> = ({
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
-                    { code: '[alsafwa_donate_box]', desc: 'صندوق التبرع المباشر السريع مع حسابات إنستاباي وفودافون كاش' },
+                    { code: '[alsafwa_donate_box]', desc: 'صندوق التبرع المباشر السريع مع حسابات إنستاباي والمحفظة الإلكترونية' },
                     { code: '[alsafwa_hearse_project]', desc: 'صندوق أسهم مشروع سيارة نقل ودفن الموتى (المادة 4 من اللائحة)' },
                     { code: '[alsafwa_quick_donation]', desc: 'شريط تبرع فوري مدمج مع اختيار المبلغ والنشاط' },
                     { code: '[alsafwa_services_list]', desc: 'عرض شبكة الأنشطة والخدمات الـ 11 كاملة' },

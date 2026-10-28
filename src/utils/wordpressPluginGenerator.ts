@@ -54,7 +54,7 @@ function alsafwa_render_settings_page() {
                 <tbody>
                     <tr>
                         <td><code>[alsafwa_quick_donation]</code></td>
-                        <td>شريط تبرع سريع مدمج يقبل جميع المبالغ وإنستاباي وفودافون كاش</td>
+                        <td>شريط تبرع سريع مدمج يقبل جميع المبالغ وإنستاباي والمحفظة الإلكترونية</td>
                     </tr>
                     <tr>
                         <td><code>[alsafwa_hearse_project]</code></td>
@@ -76,7 +76,7 @@ function alsafwa_render_settings_page() {
             <h2>بيانات التواصل والحسابات المعتمدة</h2>
             <p><strong>الهاتف والواتساب الموحد:</strong> ${societyInfo.phone}</p>
             <p><strong>معرف إنستاباي:</strong> alsafwasociety@instapay</p>
-            <p><strong>محفظة فودافون كاش:</strong> ${societyInfo.phone}</p>
+            <p><strong>المحفظة الإلكترونية:</strong> ${societyInfo.phone}</p>
             <p><strong>العنوان:</strong> ${societyInfo.address}</p>
         </div>
     </div>
@@ -138,7 +138,7 @@ function alsafwa_shortcode_quick_donation($atts) {
             <p style="margin: 0 0 8px 0;"><strong>طرق الدفع السريع المتاحة:</strong></p>
             <ul style="margin: 0; padding-right: 20px; font-size: 13px;">
                 <li>إنستاباي (InstaPay): <strong>alsafwasociety@instapay</strong> أو على الرقم <strong>${societyInfo.phone}</strong></li>
-                <li>فودافون كاش: <strong>${societyInfo.phone}</strong></li>
+                <li>المحفظة الإلكترونية: <strong>${societyInfo.phone}</strong></li>
                 <li>حساب البنك الأهلي المصري: <strong>10912384758001</strong></li>
             </ul>
         </div>
@@ -189,7 +189,7 @@ License: GPLv2 or later
 
 == كيفية الاستخدام ==
 يمكنك استخدام أي من الشورت كود التالية داخل أي صفحة أو مقال أو ودجت في موقعك:
-[alsafwa_quick_donation] : صندوق تبرع فوري مع حسابات إنستاباي وفودافون كاش
+[alsafwa_quick_donation] : صندوق تبرع فوري مع حسابات إنستاباي والمحفظة الإلكترونية
 [alsafwa_hearse_project] : صندوق مشروع سيارة نقل ودفن الموتى (المادة 4)
 `;
 

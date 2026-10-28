@@ -32,7 +32,7 @@ Theme Name: جمعية الصفوة الإسلامية - Alsafwa Islamic Society
 Theme URI: ${info.website}
 Author: جمعية الصفوة الإسلامية
 Author URI: ${info.website}
-Description: قالب ووردبريس رسمي متكامل لجمعية الصفوة الإسلامية المشهرة برقم 3794 لسنة 1991 بالقاهرة. يشمل مشروع سيارة نقل ودفن الموتى (المادة 4)، أنشطة ومجالات التكافل الاجتماعي الـ 11 مساراً للخير، قسم التواصل وطلب المندوب، روابط السوشيال ميديا (فيسبوك، يوتيوب، واتساب)، بوابات التبرع المباشر (إنستاباي، فودافون كاش، البنك الأهلي، بنك مصر)، وتخصيص كامل للمحتوى من لوحة تحكم ووردبريس.
+Description: قالب ووردبريس رسمي متكامل لجمعية الصفوة الإسلامية المشهرة برقم 3794 لسنة 1991 بالقاهرة. يشمل مشروع سيارة نقل ودفن الموتى (المادة 4)، أنشطة ومجالات التكافل الاجتماعي الـ 11 مساراً للخير، قسم التواصل وطلب المندوب، روابط السوشيال ميديا (فيسبوك، يوتيوب، واتساب)، بوابات التبرع المباشر (إنستاباي، المحفظة الإلكترونية، البنك الأهلي، بنك مصر)، وتخصيص كامل للمحتوى من لوحة تحكم ووردبريس.
 Version: 2.0.0
 Requires at least: 6.0
 Tested up to: 6.7
@@ -110,6 +110,582 @@ body {
 }
 `;
 
+  const adminCmsPhp = `<?php
+/**
+ * Alsafwa Islamic Society - Comprehensive WordPress Admin CMS & Content Management
+ * Theme Name: جمعية الصفوة الإسلامية
+ * Registration No: 3794 لسنة 1991
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// 1. Get Site Data with defaults
+function alsafwa_get_site_data() {
+    $defaults = array(
+        'name' => '${info.name}',
+        'registrationNumber' => '${info.registrationNumber}',
+        'registrationYear' => '${info.registrationYear}',
+        'administration' => '${info.administration}',
+        'bylawApprovalDate' => '${info.bylawApprovalDate}',
+        'phone' => '${info.phone}',
+        'whatsappUrl' => '${waUrl}',
+        'address' => '${info.address}',
+        'email' => '${info.email}',
+        'workHours' => '${info.workHours}',
+        'logoUrl' => '${info.logoUrl}',
+        'website' => '${info.website}',
+        // Social Links
+        'facebookPage' => '${fbPage}',
+        'facebookGroup' => '${fbGroup}',
+        'youtube' => '${ytChannel}',
+        // Hearse Project
+        'hearseTarget' => ${hearse.targetAmount},
+        'hearseRaised' => ${hearse.raisedAmount},
+        'hearseDonors' => ${hearse.donorCount},
+        // Payment Accounts
+        'instaPayId' => '${instaPayId}',
+        'vodafoneCash' => '${vodafoneNum}',
+        'bankNbe' => '10912384758001',
+        'bankMisr' => '34800010009841',
+        // Legal Bylaws Articles
+        'article1' => 'اتفق الموقعون على هذا النظام على تأسيس جمعية باسم: جمعية الصفوة الإسلامية. ويكون مقر مركز إدارتها: 18 ش ترعة التوفيقية - عزبة النخل الغربية - المطرية. نطاق عملها الجغرافي: جمعية محلية على مستوى المحافظة.',
+        'article4' => 'وتعمل الجمعية على تنفيذ الأنشطة الآتية: شراء سيارة وتجهيزها لنقل ودفن الموتى (مشروع إكرام الموتى ونقلهم مجاناً للأسر غير القادرة).'
+    );
+
+    $saved = get_option('alsafwa_site_data', array());
+    return wp_parse_args($saved, $defaults);
+}
+
+// 2. Get Activities Data with defaults
+function alsafwa_get_activities_data() {
+    $saved = get_option('alsafwa_activities_data', null);
+    if (!empty($saved) && is_array($saved)) {
+        return $saved;
+    }
+
+    return array(
+        ${acts.map((act) => `array(
+            'id' => '${act.id}',
+            'title' => '${act.title.replace(/'/g, "\\'")}',
+            'subtitle' => '${act.subtitle.replace(/'/g, "\\'")}',
+            'category' => '${act.category.replace(/'/g, "\\'")}',
+            'targetAmount' => ${act.targetAmount},
+            'raisedAmount' => ${act.raisedAmount},
+            'donorCount' => ${act.donorCount || 50},
+            'unitDescription' => '${(act.unitDescription || '').replace(/'/g, "\\'")}',
+            'description' => '${act.description.replace(/'/g, "\\'")}',
+            'featured' => ${act.featured ? 'true' : 'false'},
+            'iconName' => '${act.iconName || 'Heart'}'
+        )`).join(',\n        ')}
+    );
+}
+
+// 3. Register Top-Level Admin Menu in WordPress Sidebar
+add_action('admin_menu', 'alsafwa_register_cms_menu');
+function alsafwa_register_cms_menu() {
+    add_menu_page(
+        'لوحة تحكم جمعية الصفوة (CMS)',
+        'لوحة تحكم الصفوة (CMS)',
+        'manage_options',
+        'alsafwa-cms',
+        'alsafwa_render_cms_dashboard',
+        'dashicons-heart',
+        2
+    );
+}
+
+// 4. Enqueue Admin Assets & Media Uploader
+add_action('admin_enqueue_scripts', 'alsafwa_enqueue_cms_assets');
+function alsafwa_enqueue_cms_assets($hook) {
+    if (strpos($hook, 'alsafwa-cms') !== false) {
+        wp_enqueue_media();
+        wp_enqueue_style('alsafwa-cairo', 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap', array(), null);
+    }
+}
+
+// 5. Render CMS Dashboard Page
+function alsafwa_render_cms_dashboard() {
+    if (!current_user_can('manage_options')) {
+        wp_die(__('عفواً، ليس لديك صلاحية للوصول إلى هذه الصفحة.', 'alsafwa-theme'));
+    }
+
+    $site_data = alsafwa_get_site_data();
+    $activities = alsafwa_get_activities_data();
+    $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'identity';
+    $message = '';
+
+    // Handle Form Submissions
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alsafwa_cms_nonce'])) {
+        if (!check_admin_referer('alsafwa_cms_save_action', 'alsafwa_cms_nonce')) {
+            wp_die('فشل التحقق الأمني.');
+        }
+
+        $tab_action = isset($_POST['tab_action']) ? sanitize_text_field($_POST['tab_action']) : '';
+
+        if ($tab_action === 'save_identity') {
+            $site_data['name'] = sanitize_text_field($_POST['name']);
+            $site_data['registrationNumber'] = sanitize_text_field($_POST['registrationNumber']);
+            $site_data['registrationYear'] = sanitize_text_field($_POST['registrationYear']);
+            $site_data['administration'] = sanitize_text_field($_POST['administration']);
+            $site_data['bylawApprovalDate'] = sanitize_text_field($_POST['bylawApprovalDate']);
+            $site_data['phone'] = sanitize_text_field($_POST['phone']);
+            $site_data['address'] = sanitize_textarea_field($_POST['address']);
+            $site_data['email'] = sanitize_email($_POST['email']);
+            $site_data['workHours'] = sanitize_text_field($_POST['workHours']);
+            $site_data['logoUrl'] = esc_url_raw($_POST['logoUrl']);
+            $site_data['article1'] = sanitize_textarea_field($_POST['article1']);
+            $site_data['article4'] = sanitize_textarea_field($_POST['article4']);
+            
+            // Sync with Theme Mods
+            set_theme_mod('alsafwa_reg_number', $site_data['registrationNumber']);
+            set_theme_mod('alsafwa_reg_year', $site_data['registrationYear']);
+            set_theme_mod('alsafwa_admin_area', $site_data['administration']);
+            set_theme_mod('alsafwa_bylaw_date', $site_data['bylawApprovalDate']);
+            set_theme_mod('alsafwa_phone', $site_data['phone']);
+            set_theme_mod('alsafwa_address', $site_data['address']);
+            set_theme_mod('alsafwa_email', $site_data['email']);
+            set_theme_mod('alsafwa_work_hours', $site_data['workHours']);
+
+            update_option('alsafwa_site_data', $site_data);
+            $message = 'تم حفظ وتحديث البيانات الأساسية والإشهار بنجاح!';
+        } elseif ($tab_action === 'save_hearse') {
+            $site_data['hearseTarget'] = absint($_POST['hearseTarget']);
+            $site_data['hearseRaised'] = absint($_POST['hearseRaised']);
+            $site_data['hearseDonors'] = absint($_POST['hearseDonors']);
+            
+            set_theme_mod('alsafwa_hearse_target', $site_data['hearseTarget']);
+            set_theme_mod('alsafwa_hearse_raised', $site_data['hearseRaised']);
+            set_theme_mod('alsafwa_hearse_donors', $site_data['hearseDonors']);
+
+            update_option('alsafwa_site_data', $site_data);
+            $message = 'تم تحديث بيانات مشروع سيارة إكرام ودفن الموتى (المادة 4) بنجاح!';
+        } elseif ($tab_action === 'save_payments') {
+            $site_data['instaPayId'] = sanitize_text_field($_POST['instaPayId']);
+            $site_data['vodafoneCash'] = sanitize_text_field($_POST['vodafoneCash']);
+            $site_data['bankNbe'] = sanitize_text_field($_POST['bankNbe']);
+            $site_data['bankMisr'] = sanitize_text_field($_POST['bankMisr']);
+
+            set_theme_mod('alsafwa_instapay_id', $site_data['instaPayId']);
+            set_theme_mod('alsafwa_vodafone_cash', $site_data['vodafoneCash']);
+            set_theme_mod('alsafwa_bank_nbe', $site_data['bankNbe']);
+            set_theme_mod('alsafwa_bank_misr', $site_data['bankMisr']);
+
+            update_option('alsafwa_site_data', $site_data);
+            $message = 'تم تحديث حسابات التبرع وبوابات الدفع المعتمدة بنجاح!';
+        } elseif ($tab_action === 'save_social') {
+            $site_data['facebookPage'] = esc_url_raw($_POST['facebookPage']);
+            $site_data['facebookGroup'] = esc_url_raw($_POST['facebookGroup']);
+            $site_data['youtube'] = esc_url_raw($_POST['youtube']);
+            $site_data['whatsappUrl'] = esc_url_raw($_POST['whatsappUrl']);
+
+            set_theme_mod('alsafwa_facebook_page', $site_data['facebookPage']);
+            set_theme_mod('alsafwa_facebook_group', $site_data['facebookGroup']);
+            set_theme_mod('alsafwa_youtube', $site_data['youtube']);
+            set_theme_mod('alsafwa_whatsapp_url', $site_data['whatsappUrl']);
+
+            update_option('alsafwa_site_data', $site_data);
+            $message = 'تم تحديث روابط وسائل التواصل الاجتماعي بنجاح!';
+        } elseif ($tab_action === 'save_activities') {
+            if (isset($_POST['acts']) && is_array($_POST['acts'])) {
+                $new_acts = array();
+                foreach ($_POST['acts'] as $idx => $act_post) {
+                    $new_acts[] = array(
+                        'id' => sanitize_text_field($act_post['id']),
+                        'title' => sanitize_text_field($act_post['title']),
+                        'subtitle' => sanitize_text_field($act_post['subtitle']),
+                        'category' => sanitize_text_field($act_post['category']),
+                        'targetAmount' => absint($act_post['targetAmount']),
+                        'raisedAmount' => absint($act_post['raisedAmount']),
+                        'donorCount' => absint($act_post['donorCount']),
+                        'beneficiaryCount' => absint($act_post['beneficiaryCount']),
+                        'unitDescription' => sanitize_text_field($act_post['unitDescription']),
+                        'description' => sanitize_textarea_field($act_post['description']),
+                        'featured' => !empty($act_post['featured']),
+                        'icon' => sanitize_text_field($act_post['icon'])
+                    );
+                }
+                $activities = $new_acts;
+                update_option('alsafwa_activities_data', $activities);
+                $message = 'تم تحديث أنشطة ومشاريع الجمعية الـ 11 بنجاح!';
+            }
+        } elseif ($tab_action === 'add_activity') {
+            $new_item = array(
+                'id' => 'custom-' . time(),
+                'title' => sanitize_text_field($_POST['new_title']),
+                'subtitle' => sanitize_text_field($_POST['new_subtitle']),
+                'category' => sanitize_text_field($_POST['new_category']),
+                'targetAmount' => absint($_POST['new_target']),
+                'raisedAmount' => 0,
+                'donorCount' => 0,
+                'beneficiaryCount' => 0,
+                'unitDescription' => sanitize_text_field($_POST['new_unit']),
+                'description' => sanitize_textarea_field($_POST['new_desc']),
+                'featured' => false,
+                'icon' => 'Heart'
+            );
+            $activities[] = $new_item;
+            update_option('alsafwa_activities_data', $activities);
+            $message = 'تم إضافة النشاط الخيري الجديد بنجاح!';
+        }
+    }
+    ?>
+    <style>
+        .alsafwa-cms-wrap { font-family: 'Cairo', sans-serif; direction: rtl; text-align: right; max-width: 1200px; margin: 20px 20px 20px 0; }
+        .alsafwa-cms-header { background: linear-gradient(135deg, #0F5132 0%, #052316 100%); color: #fff; padding: 24px; border-radius: 16px; border: 2px solid #C5A059; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .alsafwa-cms-header h1 { color: #fff; margin: 0 0 8px 0; font-size: 24px; font-weight: 900; }
+        .alsafwa-badge { background: #C5A059; color: #052316; padding: 4px 12px; border-radius: 9999px; font-weight: 800; font-size: 12px; display: inline-block; }
+        .alsafwa-nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        .alsafwa-nav-tabs a { padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; text-decoration: none; color: #475569; background: #f8fafc; border: 1px solid #cbd5e1; transition: all 0.2s; }
+        .alsafwa-nav-tabs a:hover { background: #e2e8f0; color: #0F5132; }
+        .alsafwa-nav-tabs a.active { background: #0F5132; color: #fff; border-color: #0F5132; }
+        .alsafwa-card { background: #fff; border: 1px solid #cbd5e1; border-radius: 14px; padding: 24px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .alsafwa-card h2 { margin-top: 0; font-size: 18px; font-weight: 800; color: #0F5132; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 20px; }
+        .alsafwa-form-row { margin-bottom: 18px; }
+        .alsafwa-form-row label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 13px; color: #1e293b; }
+        .alsafwa-form-row input[type="text"], .alsafwa-form-row input[type="number"], .alsafwa-form-row input[type="email"], .alsafwa-form-row input[type="url"], .alsafwa-form-row textarea, .alsafwa-form-row select { width: 100%; max-width: 650px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 13px; box-sizing: border-box; }
+        .alsafwa-form-row input:focus, .alsafwa-form-row textarea:focus { border-color: #0F5132; outline: none; box-shadow: 0 0 0 2px rgba(15, 81, 50, 0.2); }
+        .alsafwa-btn-primary { background: #0F5132; color: #fff; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+        .alsafwa-btn-primary:hover { background: #0A3622; }
+        .alsafwa-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .alsafwa-table th { background: #f8fafc; padding: 10px; font-weight: 800; border: 1px solid #e2e8f0; font-size: 12px; }
+        .alsafwa-table td { padding: 10px; border: 1px solid #e2e8f0; font-size: 12px; vertical-align: top; }
+    </style>
+
+    <div class="wrap alsafwa-cms-wrap">
+        <!-- Header -->
+        <div class="alsafwa-cms-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h1>لوحة تحكم وإدارة محتوى جمعية الصفوة الإسلامية</h1>
+                    <p style="margin:0; opacity: 0.9; font-size: 13px;">
+                        إشهار رقم <strong><?php echo esc_html($site_data['registrationNumber']); ?> لسنة <?php echo esc_html($site_data['registrationYear']); ?></strong> - إدارة المطرية بالقاهرة
+                    </p>
+                </div>
+                <div>
+                    <span class="alsafwa-badge">المدير العام · نظام CMS المتكامل</span>
+                    <a href="<?php echo home_url('/'); ?>" target="_blank" style="margin-right: 10px; color: #fff; text-decoration: underline; font-weight: 700; font-size: 12px;">معاينة الموقع ↗</a>
+                </div>
+            </div>
+        </div>
+
+        <?php if (!empty($message)): ?>
+            <div class="notice notice-success is-dismissible" style="padding: 12px 16px; margin-bottom: 20px; border-right: 4px solid #0F5132; font-weight: bold; font-size: 14px;">
+                <?php echo esc_html($message); ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Tabs Navigation -->
+        <div class="alsafwa-nav-tabs">
+            <a href="?page=alsafwa-cms&tab=identity" class="<?php echo $active_tab === 'identity' ? 'active' : ''; ?>">🏛️ البيانات الأساسية والإشهار</a>
+            <a href="?page=alsafwa-cms&tab=hearse" class="<?php echo $active_tab === 'hearse' ? 'active' : ''; ?>">🚐 سيارة إكرام الموتى (المادة 4)</a>
+            <a href="?page=alsafwa-cms&tab=activities" class="<?php echo $active_tab === 'activities' ? 'active' : ''; ?>">🤲 أنشطة التكافل الـ 11</a>
+            <a href="?page=alsafwa-cms&tab=payments" class="<?php echo $active_tab === 'payments' ? 'active' : ''; ?>">💳 حسابات التبرع وبوابات الدفع</a>
+            <a href="?page=alsafwa-cms&tab=social" class="<?php echo $active_tab === 'social' ? 'active' : ''; ?>">🌐 السوشيال ميديا والتواصل</a>
+        </div>
+
+        <!-- TAB 1: IDENTITY -->
+        <?php if ($active_tab === 'identity'): ?>
+            <div class="alsafwa-card">
+                <h2>تعديل بيانات الجمعية والإشهار الرسمي</h2>
+                <form method="post">
+                    <?php wp_nonce_field('alsafwa_cms_save_action', 'alsafwa_cms_nonce'); ?>
+                    <input type="hidden" name="tab_action" value="save_identity" />
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                        <div class="alsafwa-form-row">
+                            <label>اسم الجمعية الرسمي:</label>
+                            <input type="text" name="name" value="<?php echo esc_attr($site_data['name']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>رقم القيد الرسمي:</label>
+                            <input type="text" name="registrationNumber" value="<?php echo esc_attr($site_data['registrationNumber']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>سنة التأسيس والإشهار:</label>
+                            <input type="text" name="registrationYear" value="<?php echo esc_attr($site_data['registrationYear']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>جهة القيد والإشراف:</label>
+                            <input type="text" name="administration" value="<?php echo esc_attr($site_data['administration']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>تاريخ اعتماد اللائحة:</label>
+                            <input type="text" name="bylawApprovalDate" value="<?php echo esc_attr($site_data['bylawApprovalDate']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>الهاتف الموحد والواتساب:</label>
+                            <input type="text" name="phone" value="<?php echo esc_attr($site_data['phone']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>البريد الإلكتروني:</label>
+                            <input type="email" name="email" value="<?php echo esc_attr($site_data['email']); ?>" />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>مواعيد العمل:</label>
+                            <input type="text" name="workHours" value="<?php echo esc_attr($site_data['workHours']); ?>" />
+                        </div>
+                    </div>
+
+                    <div class="alsafwa-form-row">
+                        <label>عنوان المقر الرئيسي:</label>
+                        <textarea name="address" rows="2"><?php echo esc_textarea($site_data['address']); ?></textarea>
+                    </div>
+
+                    <div class="alsafwa-form-row">
+                        <label>رابط الشعار (اللوجو):</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" id="alsafwa-logo-input" name="logoUrl" value="<?php echo esc_attr($site_data['logoUrl']); ?>" style="flex:1;" />
+                            <button type="button" class="button alsafwa-upload-btn" data-target="#alsafwa-logo-input">رفع من مكتبة الوسائط</button>
+                        </div>
+                    </div>
+
+                    <div class="alsafwa-form-row">
+                        <label>المادة (1) - المقر والنطاق الجغرافي:</label>
+                        <textarea name="article1" rows="3"><?php echo esc_textarea($site_data['article1']); ?></textarea>
+                    </div>
+
+                    <div class="alsafwa-form-row">
+                        <label>المادة (4) - المشروعات النوعية وسيارة إكرام الموتى:</label>
+                        <textarea name="article4" rows="3"><?php echo esc_textarea($site_data['article4']); ?></textarea>
+                    </div>
+
+                    <button type="submit" class="alsafwa-btn-primary">حفظ وتحديث بيانات الإشهار</button>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <!-- TAB 2: HEARSE PROJECT -->
+        <?php if ($active_tab === 'hearse'): ?>
+            <div class="alsafwa-card">
+                <h2>مشروع شراء وتجهيز سيارة نقل ودفن الموتى (المادة 4 من اللائحة)</h2>
+                <form method="post">
+                    <?php wp_nonce_field('alsafwa_cms_save_action', 'alsafwa_cms_nonce'); ?>
+                    <input type="hidden" name="tab_action" value="save_hearse" />
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                        <div class="alsafwa-form-row">
+                            <label>المبلغ الإجمالي المستهدف (ج.م):</label>
+                            <input type="number" name="hearseTarget" value="<?php echo esc_attr($site_data['hearseTarget']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>المبلغ المجموع حتى الآن (ج.م):</label>
+                            <input type="number" name="hearseRaised" value="<?php echo esc_attr($site_data['hearseRaised']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>عدد المساهمين والمتبرعين:</label>
+                            <input type="number" name="hearseDonors" value="<?php echo esc_attr($site_data['hearseDonors']); ?>" required />
+                        </div>
+                    </div>
+
+                    <p style="font-size: 12px; color: #64748b; margin-top: 5px;">
+                        * سيتم حساب النسبة المئوية للإنجاز وشريط التقدم في واجهة الموقع تلقائياً بناءً على المبلغ المجموع والمستهدف.
+                    </p>
+
+                    <button type="submit" class="alsafwa-btn-primary">حفظ إحصائيات مشروع السيارة</button>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <!-- TAB 3: ACTIVITIES -->
+        <?php if ($active_tab === 'activities'): ?>
+            <div class="alsafwa-card">
+                <h2>إدارة وتعديل أنشطة ومجالات التكافل الاجتماعي (11 مساراً للخير)</h2>
+                <form method="post">
+                    <?php wp_nonce_field('alsafwa_cms_save_action', 'alsafwa_cms_nonce'); ?>
+                    <input type="hidden" name="tab_action" value="save_activities" />
+
+                    <table class="alsafwa-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">اسم النشاط والوصف الفرعي</th>
+                                <th style="width: 15%;">الفئة</th>
+                                <th style="width: 15%;">الهدف (ج.م)</th>
+                                <th style="width: 15%;">المجموع (ج.م)</th>
+                                <th style="width: 30%;">تفاصيل النشاط ومقدار السهم</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($activities as $idx => $act): ?>
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="acts[<?php echo $idx; ?>][id]" value="<?php echo esc_attr($act['id']); ?>" />
+                                        <input type="hidden" name="acts[<?php echo $idx; ?>][icon]" value="<?php echo esc_attr(isset($act['icon']) ? $act['icon'] : 'Heart'); ?>" />
+                                        <input type="hidden" name="acts[<?php echo $idx; ?>][donorCount]" value="<?php echo esc_attr(isset($act['donorCount']) ? $act['donorCount'] : 50); ?>" />
+                                        <input type="hidden" name="acts[<?php echo $idx; ?>][beneficiaryCount]" value="<?php echo esc_attr(isset($act['beneficiaryCount']) ? $act['beneficiaryCount'] : 100); ?>" />
+                                        <input type="text" name="acts[<?php echo $idx; ?>][title]" value="<?php echo esc_attr($act['title']); ?>" style="font-weight: bold; margin-bottom: 4px;" />
+                                        <input type="text" name="acts[<?php echo $idx; ?>][subtitle]" value="<?php echo esc_attr($act['subtitle']); ?>" style="font-size: 11px;" />
+                                    </td>
+                                    <td>
+                                        <select name="acts[<?php echo $idx; ?>][category]">
+                                            <option value="كفالات" <?php selected($act['category'], 'كفالات'); ?>>كفالات</option>
+                                            <option value="صحة" <?php selected($act['category'], 'صحة'); ?>>صحة</option>
+                                            <option value="تعليم وقرآن" <?php selected($act['category'], 'تعليم وقرآن'); ?>>تعليم وقرآن</option>
+                                            <option value="مساعدات" <?php selected($act['category'], 'مساعدات'); ?>>مساعدات</option>
+                                            <option value="عمارة ومشاريع" <?php selected($act['category'], 'عمارة ومشاريع'); ?>>عمارة ومشاريع</option>
+                                            <option value="مواسم" <?php selected($act['category'], 'مواسم'); ?>>مواسم</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="acts[<?php echo $idx; ?>][targetAmount]" value="<?php echo esc_attr($act['targetAmount']); ?>" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="acts[<?php echo $idx; ?>][raisedAmount]" value="<?php echo esc_attr($act['raisedAmount']); ?>" />
+                                    </td>
+                                    <td>
+                                        <input type="text" name="acts[<?php echo $idx; ?>][unitDescription]" value="<?php echo esc_attr(isset($act['unitDescription']) ? $act['unitDescription'] : ''); ?>" placeholder="سهم 500 ج.م أو مساهمة مفتوحة" style="margin-bottom: 4px;" />
+                                        <textarea name="acts[<?php echo $idx; ?>][description]" rows="2"><?php echo esc_textarea($act['description']); ?></textarea>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
+                    <div style="margin-top: 20px;">
+                        <button type="submit" class="alsafwa-btn-primary">حفظ وتحديث جميع الأنشطة الـ 11</button>
+                    </div>
+                </form>
+
+                <hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;" />
+
+                <h3>إضافة نشاط أو مشروع خيري جديد</h3>
+                <form method="post" style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <?php wp_nonce_field('alsafwa_cms_save_action', 'alsafwa_cms_nonce'); ?>
+                    <input type="hidden" name="tab_action" value="add_activity" />
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+                        <div>
+                            <label>اسم النشاط:</label>
+                            <input type="text" name="new_title" required placeholder="مثال: إفطار صائم وتوزيع تمور" />
+                        </div>
+                        <div>
+                            <label>العنوان الفرعي:</label>
+                            <input type="text" name="new_subtitle" required placeholder="مثال: وجبات ساخنة يومية" />
+                        </div>
+                        <div>
+                            <label>الفئة:</label>
+                            <select name="new_category">
+                                <option value="مواسم">مواسم</option>
+                                <option value="مساعدات">مساعدات</option>
+                                <option value="كفالات">كفالات</option>
+                                <option value="صحة">صحة</option>
+                                <option value="تعليم وقرآن">تعليم وقرآن</option>
+                                <option value="عمارة ومشاريع">عمارة ومشاريع</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>المبلغ المستهدف (ج.م):</label>
+                            <input type="number" name="new_target" value="100000" />
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 12px;">
+                        <label>مقدار السهم المقترح:</label>
+                        <input type="text" name="new_unit" placeholder="مثال: سهم الوجبة 100 ج.م أو كرتونة 350 ج.م" />
+                    </div>
+
+                    <div style="margin-top: 12px;">
+                        <label>وصف النشاط:</label>
+                        <textarea name="new_desc" rows="2" placeholder="اكتب نبذة مختصرة عن هذا النشاط وأثره الخيري..."></textarea>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <button type="submit" class="button button-primary">إضافة هذا النشاط للموقع</button>
+                    </div>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <!-- TAB 4: PAYMENTS -->
+        <?php if ($active_tab === 'payments'): ?>
+            <div class="alsafwa-card">
+                <h2>حسابات التبرع المعتمدة وبوابات الدفع الإلكتروني</h2>
+                <form method="post">
+                    <?php wp_nonce_field('alsafwa_cms_save_action', 'alsafwa_cms_nonce'); ?>
+                    <input type="hidden" name="tab_action" value="save_payments" />
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                        <div class="alsafwa-form-row">
+                            <label>معرف إنستاباي (InstaPay ID):</label>
+                            <input type="text" name="instaPayId" value="<?php echo esc_attr($site_data['instaPayId']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>رقم المحفظة الإلكترونية:</label>
+                            <input type="text" name="vodafoneCash" value="<?php echo esc_attr($site_data['vodafoneCash']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>رقم حساب البنك الأهلي المصري (NBE):</label>
+                            <input type="text" name="bankNbe" value="<?php echo esc_attr($site_data['bankNbe']); ?>" required />
+                        </div>
+                        <div class="alsafwa-form-row">
+                            <label>رقم حساب بنك مصر (Banque Misr):</label>
+                            <input type="text" name="bankMisr" value="<?php echo esc_attr($site_data['bankMisr']); ?>" required />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="alsafwa-btn-primary">حفظ حسابات وبوابات الدفع</button>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <!-- TAB 5: SOCIAL -->
+        <?php if ($active_tab === 'social'): ?>
+            <div class="alsafwa-card">
+                <h2>روابط وسائل التواصل الاجتماعي وقنوات الاتصال</h2>
+                <form method="post">
+                    <?php wp_nonce_field('alsafwa_cms_save_action', 'alsafwa_cms_nonce'); ?>
+                    <input type="hidden" name="tab_action" value="save_social" />
+
+                    <div class="alsafwa-form-row">
+                        <label>رابط صفحة الفيسبوك الرسمية:</label>
+                        <input type="url" name="facebookPage" value="<?php echo esc_attr($site_data['facebookPage']); ?>" required />
+                    </div>
+
+                    <div class="alsafwa-form-row">
+                        <label>رابط جروب الفيسبوك (جروب الخير):</label>
+                        <input type="url" name="facebookGroup" value="<?php echo esc_attr($site_data['facebookGroup']); ?>" required />
+                    </div>
+
+                    <div class="alsafwa-form-row">
+                        <label>رابط قناة اليوتيوب الرسمية:</label>
+                        <input type="url" name="youtube" value="<?php echo esc_attr($site_data['youtube']); ?>" required />
+                    </div>
+
+                    <div class="alsafwa-form-row">
+                        <label>رابط محادثة واتساب المباشرة:</label>
+                        <input type="url" name="whatsappUrl" value="<?php echo esc_attr($site_data['whatsappUrl']); ?>" required />
+                    </div>
+
+                    <button type="submit" class="alsafwa-btn-primary">حفظ وتحديث روابط التواصل</button>
+                </form>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Media Uploader Script -->
+    <script>
+    jQuery(document).ready(function($) {
+        $('.alsafwa-upload-btn').click(function(e) {
+            e.preventDefault();
+            var targetSelector = $(this).data('target');
+            var customUploader = wp.media({
+                title: 'اختيار صورة لجمعية الصفوة الإسلامية',
+                button: { text: 'استخدام هذه الصورة' },
+                multiple: false
+            });
+            customUploader.on('select', function() {
+                var attachment = customUploader.state().get('selection').first().toJSON();
+                $(targetSelector).val(attachment.url);
+            });
+            customUploader.open();
+        });
+    });
+    </script>
+    <?php
+}
+`;
+
   const functionsPhp = `<?php
 /**
  * Alsafwa Islamic Society Theme Functions
@@ -119,6 +695,11 @@ body {
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
+}
+
+// 1. Load Full WordPress Admin CMS Dashboard & Content Management Engine
+if (file_exists(get_template_directory() . '/inc/admin-cms.php')) {
+    require_once get_template_directory() . '/inc/admin-cms.php';
 }
 
 function alsafwa_theme_setup() {
@@ -335,7 +916,7 @@ function alsafwa_customize_register($wp_customize) {
 
     $wp_customize->add_setting('alsafwa_vodafone_cash', array('default' => '${vodafoneNum}', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('alsafwa_vodafone_cash', array(
-        'label'    => 'رقم فودافون كاش',
+        'label'    => 'رقم المحفظة الإلكترونية',
         'section'  => 'alsafwa_payment_section',
         'type'     => 'text',
     ));
@@ -377,7 +958,7 @@ function alsafwa_donate_box_shortcode($atts) {
                 <span class="font-mono text-gray-900 text-sm font-bold block mt-1 select-all"><?php echo esc_html($instapay); ?></span>
             </div>
             <div class="p-3 bg-emerald-50/80 rounded-xl border border-emerald-100">
-                <span class="font-bold text-emerald-800 block text-xs">فودافون كاش:</span>
+                <span class="font-bold text-emerald-800 block text-xs">المحفظة الإلكترونية:</span>
                 <span class="font-mono text-gray-900 text-sm font-bold block mt-1 select-all"><?php echo esc_html($voda); ?></span>
             </div>
         </div>
@@ -405,12 +986,14 @@ add_shortcode('alsafwa_donate_box', 'alsafwa_donate_box_shortcode');
 <?php wp_body_open(); ?>
 
 <?php
-$reg_no = get_theme_mod('alsafwa_reg_number', '${info.registrationNumber}');
-$phone = get_theme_mod('alsafwa_phone', '${info.phone}');
-$fb_page = get_theme_mod('alsafwa_facebook_page', '${fbPage}');
-$fb_group = get_theme_mod('alsafwa_facebook_group', '${fbGroup}');
-$yt_chan = get_theme_mod('alsafwa_youtube', '${ytChannel}');
-$wa_link = get_theme_mod('alsafwa_whatsapp_url', '${waUrl}');
+$site_data = function_exists('alsafwa_get_site_data') ? alsafwa_get_site_data() : array();
+$reg_no = !empty($site_data['registrationNumber']) ? $site_data['registrationNumber'] : get_theme_mod('alsafwa_reg_number', '${info.registrationNumber}');
+$phone = !empty($site_data['phone']) ? $site_data['phone'] : get_theme_mod('alsafwa_phone', '${info.phone}');
+$fb_page = !empty($site_data['facebookPage']) ? $site_data['facebookPage'] : get_theme_mod('alsafwa_facebook_page', '${fbPage}');
+$fb_group = !empty($site_data['facebookGroup']) ? $site_data['facebookGroup'] : get_theme_mod('alsafwa_facebook_group', '${fbGroup}');
+$yt_chan = !empty($site_data['youtube']) ? $site_data['youtube'] : get_theme_mod('alsafwa_youtube', '${ytChannel}');
+$wa_link = !empty($site_data['whatsappUrl']) ? $site_data['whatsappUrl'] : get_theme_mod('alsafwa_whatsapp_url', '${waUrl}');
+$logo_url = !empty($site_data['logoUrl']) ? $site_data['logoUrl'] : '${info.logoUrl}';
 ?>
 
 <!-- Top Legal Notification & Social Channels Bar -->
@@ -471,6 +1054,8 @@ $wa_link = get_theme_mod('alsafwa_whatsapp_url', '${waUrl}');
             <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center gap-3 shrink-0">
                 <?php if (has_custom_logo()) : ?>
                     <?php the_custom_logo(); ?>
+                <?php elseif (!empty($logo_url)) : ?>
+                    <img src="<?php echo esc_url($logo_url); ?>" alt="جمعية الصفوة الإسلامية" class="h-14 w-14 object-contain rounded-full shadow-sm border border-emerald-100" />
                 <?php else : ?>
                     <img src="<?php echo get_template_directory_uri(); ?>/assets/logo.jpg" alt="جمعية الصفوة الإسلامية" class="h-14 w-14 object-contain rounded-full shadow-sm border border-emerald-100" onerror="this.src='https://api.iconify.design/lucide:shield-check.svg?color=%230F5132&width=48'" />
                 <?php endif; ?>
@@ -512,32 +1097,35 @@ $wa_link = get_theme_mod('alsafwa_whatsapp_url', '${waUrl}');
  */
 get_header();
 
-$reg_no = get_theme_mod('alsafwa_reg_number', '${info.registrationNumber}');
-$reg_yr = get_theme_mod('alsafwa_reg_year', '${info.registrationYear}');
-$admin_area = get_theme_mod('alsafwa_admin_area', '${info.administration}');
-$bylaw_date = get_theme_mod('alsafwa_bylaw_date', '${info.bylawApprovalDate}');
-$phone = get_theme_mod('alsafwa_phone', '${info.phone}');
-$address = get_theme_mod('alsafwa_address', '${info.address}');
-$email = get_theme_mod('alsafwa_email', '${info.email}');
-$hours = get_theme_mod('alsafwa_work_hours', '${info.workHours}');
+$site_data = function_exists('alsafwa_get_site_data') ? alsafwa_get_site_data() : array();
+$reg_no = !empty($site_data['registrationNumber']) ? $site_data['registrationNumber'] : get_theme_mod('alsafwa_reg_number', '${info.registrationNumber}');
+$reg_yr = !empty($site_data['registrationYear']) ? $site_data['registrationYear'] : get_theme_mod('alsafwa_reg_year', '${info.registrationYear}');
+$admin_area = !empty($site_data['administration']) ? $site_data['administration'] : get_theme_mod('alsafwa_admin_area', '${info.administration}');
+$bylaw_date = !empty($site_data['bylawApprovalDate']) ? $site_data['bylawApprovalDate'] : get_theme_mod('alsafwa_bylaw_date', '${info.bylawApprovalDate}');
+$phone = !empty($site_data['phone']) ? $site_data['phone'] : get_theme_mod('alsafwa_phone', '${info.phone}');
+$address = !empty($site_data['address']) ? $site_data['address'] : get_theme_mod('alsafwa_address', '${info.address}');
+$email = !empty($site_data['email']) ? $site_data['email'] : get_theme_mod('alsafwa_email', '${info.email}');
+$hours = !empty($site_data['workHours']) ? $site_data['workHours'] : get_theme_mod('alsafwa_work_hours', '${info.workHours}');
+$art1 = !empty($site_data['article1']) ? $site_data['article1'] : 'اتفق الموقعون على هذا النظام على تأسيس جمعية باسم: جمعية الصفوة الإسلامية. ويكون مقر مركز إدارتها: 18 ش ترعة التوفيقية - عزبة النخل الغربية - المطرية. نطاق عملها الجغرافي: جمعية محلية على مستوى المحافظة.';
+$art4 = !empty($site_data['article4']) ? $site_data['article4'] : 'وتعمل الجمعية على تنفيذ الأنشطة الآتية: شراء سيارة وتجهيزها لنقل ودفن الموتى (مشروع إكرام الموتى ونقلهم مجاناً للأسر غير القادرة).';
 
 // Social Links
-$fb_page = get_theme_mod('alsafwa_facebook_page', '${fbPage}');
-$fb_group = get_theme_mod('alsafwa_facebook_group', '${fbGroup}');
-$yt_chan = get_theme_mod('alsafwa_youtube', '${ytChannel}');
-$wa_link = get_theme_mod('alsafwa_whatsapp_url', '${waUrl}');
+$fb_page = !empty($site_data['facebookPage']) ? $site_data['facebookPage'] : get_theme_mod('alsafwa_facebook_page', '${fbPage}');
+$fb_group = !empty($site_data['facebookGroup']) ? $site_data['facebookGroup'] : get_theme_mod('alsafwa_facebook_group', '${fbGroup}');
+$yt_chan = !empty($site_data['youtube']) ? $site_data['youtube'] : get_theme_mod('alsafwa_youtube', '${ytChannel}');
+$wa_link = !empty($site_data['whatsappUrl']) ? $site_data['whatsappUrl'] : get_theme_mod('alsafwa_whatsapp_url', '${waUrl}');
 
 // Hearse Project data
-$hearse_target = get_theme_mod('alsafwa_hearse_target', ${hearse.targetAmount});
-$hearse_raised = get_theme_mod('alsafwa_hearse_raised', ${hearse.raisedAmount});
-$hearse_donors = get_theme_mod('alsafwa_hearse_donors', ${hearse.donorCount});
+$hearse_target = !empty($site_data['hearseTarget']) ? (int)$site_data['hearseTarget'] : get_theme_mod('alsafwa_hearse_target', ${hearse.targetAmount});
+$hearse_raised = !empty($site_data['hearseRaised']) ? (int)$site_data['hearseRaised'] : get_theme_mod('alsafwa_hearse_raised', ${hearse.raisedAmount});
+$hearse_donors = !empty($site_data['hearseDonors']) ? (int)$site_data['hearseDonors'] : get_theme_mod('alsafwa_hearse_donors', ${hearse.donorCount});
 $hearse_percent = $hearse_target > 0 ? min(100, round(($hearse_raised / $hearse_target) * 100)) : 0;
 
-// Payments
-$instapay = get_theme_mod('alsafwa_instapay_id', '${instaPayId}');
-$vodafone = get_theme_mod('alsafwa_vodafone_cash', '${vodafoneNum}');
-$bank_nbe = get_theme_mod('alsafwa_bank_nbe', '10912384758001');
-$bank_misr = get_theme_mod('alsafwa_bank_misr', '34800010009841');
+// Payments (المحفظة الإلكترونية)
+$instapay = !empty($site_data['instaPayId']) ? $site_data['instaPayId'] : get_theme_mod('alsafwa_instapay_id', '${instaPayId}');
+$vodafone = !empty($site_data['vodafoneCash']) ? $site_data['vodafoneCash'] : get_theme_mod('alsafwa_vodafone_cash', '${vodafoneNum}');
+$bank_nbe = !empty($site_data['bankNbe']) ? $site_data['bankNbe'] : get_theme_mod('alsafwa_bank_nbe', '10912384758001');
+$bank_misr = !empty($site_data['bankMisr']) ? $site_data['bankMisr'] : get_theme_mod('alsafwa_bank_misr', '34800010009841');
 ?>
 
 <!-- 1. HERO BANNER SECTION -->
@@ -620,10 +1208,10 @@ $bank_misr = get_theme_mod('alsafwa_bank_misr', '34800010009841');
 
                         <div class="p-3.5 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center justify-between">
                             <div>
-                                <span class="text-xs font-bold text-emerald-900 block">فودافون كاش:</span>
+                                <span class="text-xs font-bold text-emerald-900 block">المحفظة الإلكترونية:</span>
                                 <span class="font-mono text-sm font-bold text-gray-900 select-all block mt-0.5"><?php echo esc_html($vodafone); ?></span>
                             </div>
-                            <button type="button" onclick="copyToClipboard('<?php echo esc_js($vodafone); ?>', 'تم نسخ رقم فودافون كاش بنجاح')" class="px-3 py-1 bg-white hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg border border-emerald-200 transition-colors">
+                            <button type="button" onclick="copyToClipboard('<?php echo esc_js($vodafone); ?>', 'تم نسخ رقم المحفظة الإلكترونية بنجاح')" class="px-3 py-1 bg-white hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg border border-emerald-200 transition-colors">
                                 نسخ الرقم
                             </button>
                         </div>
@@ -682,13 +1270,13 @@ $bank_misr = get_theme_mod('alsafwa_bank_misr', '34800010009841');
             <div class="bg-stone-50 p-6 rounded-2xl border border-stone-200">
                 <span class="text-xs font-bold text-amber-700 block mb-2">المادة (1) - المقر والنطاق الجغرافي</span>
                 <p class="text-sm text-gray-700 leading-relaxed">
-                    اتفق الموقعون على هذا النظام على تأسيس جمعية باسم: جمعية الصفوة الإسلامية. ويكون مقر مركز إدارتها: 18 ش ترعة التوفيقية - عزبة النخل الغربية - المطرية. نطاق عملها الجغرافي: جمعية محلية على مستوى المحافظة.
+                    <?php echo nl2br(esc_html($art1)); ?>
                 </p>
             </div>
             <div class="bg-stone-50 p-6 rounded-2xl border border-stone-200">
                 <span class="text-xs font-bold text-amber-700 block mb-2">المادة (4) - المشروعات النوعية المعتمدة</span>
                 <p class="text-sm text-gray-700 leading-relaxed">
-                    وتعمل الجمعية على تنفيذ الأنشطة الآتية: شراء سيارة وتجهيزها لنقل ودفن الموتى (مشروع إكرام الموتى ونقلهم مجاناً للأسر غير القادرة).
+                    <?php echo nl2br(esc_html($art4)); ?>
                 </p>
             </div>
         </div>
@@ -827,43 +1415,52 @@ $bank_misr = get_theme_mod('alsafwa_bank_misr', '34800010009841');
 
         <!-- 11 Activities Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="activities-container">
-            ${acts.map((act) => {
-              const percent = act.targetAmount > 0 ? Math.min(100, Math.round((act.raisedAmount / act.targetAmount) * 100)) : 0;
-              return `
-            <div class="activity-card bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between" data-category="${act.category}">
+            <?php
+            $activities_list = function_exists('alsafwa_get_activities_data') ? alsafwa_get_activities_data() : array();
+            foreach ($activities_list as $act):
+                $target = isset($act['targetAmount']) ? (float)$act['targetAmount'] : 0;
+                $raised = isset($act['raisedAmount']) ? (float)$act['raisedAmount'] : 0;
+                $percent = $target > 0 ? min(100, round(($raised / $target) * 100)) : 0;
+                $category = isset($act['category']) ? $act['category'] : 'كفالات';
+                $title = isset($act['title']) ? $act['title'] : '';
+                $subtitle = isset($act['subtitle']) ? $act['subtitle'] : '';
+                $desc = isset($act['description']) ? $act['description'] : '';
+                $unit = !empty($act['unitDescription']) ? $act['unitDescription'] : 'مساهمة عامة مفتوحة بأي مبلغ';
+            ?>
+            <div class="activity-card bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between" data-category="<?php echo esc_attr($category); ?>">
                 <div>
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">${act.category}</span>
-                        <span class="text-xs font-bold text-amber-700 font-mono">${percent}% مكتمل</span>
+                        <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100"><?php echo esc_html($category); ?></span>
+                        <span class="text-xs font-bold text-amber-700 font-mono"><?php echo $percent; ?>% مكتمل</span>
                     </div>
                     
-                    <h3 class="text-lg font-black text-gray-900 mb-1">${act.title}</h3>
-                    <p class="text-xs text-amber-800 font-semibold mb-3">${act.subtitle}</p>
-                    <p class="text-xs text-gray-600 leading-relaxed mb-4">${act.description}</p>
+                    <h3 class="text-lg font-black text-gray-900 mb-1"><?php echo esc_html($title); ?></h3>
+                    <p class="text-xs text-amber-800 font-semibold mb-3"><?php echo esc_html($subtitle); ?></p>
+                    <p class="text-xs text-gray-600 leading-relaxed mb-4"><?php echo esc_html($desc); ?></p>
 
                     <!-- Mini Progress -->
                     <div class="w-full bg-gray-100 rounded-full h-2 mb-2 overflow-hidden">
-                        <div class="bg-emerald-600 h-full rounded-full" style="width: ${percent}%"></div>
+                        <div class="bg-emerald-600 h-full rounded-full" style="width: <?php echo $percent; ?>%"></div>
                     </div>
                     <div class="flex justify-between items-center text-[11px] text-gray-500 mb-4 font-mono">
-                        <span>تم جمع: ${act.raisedAmount.toLocaleString('ar-EG')} ج.م</span>
-                        <span>الهدف: ${act.targetAmount.toLocaleString('ar-EG')} ج.م</span>
+                        <span>تم جمع: <?php echo number_format($raised, 0, '.', ','); ?> ج.م</span>
+                        <span>الهدف: <?php echo number_format($target, 0, '.', ','); ?> ج.م</span>
                     </div>
                 </div>
 
                 <div class="pt-4 border-t border-gray-100">
-                    <p class="text-xs text-emerald-900 mb-3 font-bold">${act.unitDescription || 'مساهمة عامة مفتوحة بأي مبلغ'}</p>
+                    <p class="text-xs text-emerald-900 mb-3 font-bold"><?php echo esc_html($unit); ?></p>
                     <div class="grid grid-cols-2 gap-2">
-                        <button type="button" class="js-open-donate w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs py-2.5 rounded-xl transition-colors" data-project="${act.title}">
+                        <button type="button" class="js-open-donate w-full bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs py-2.5 rounded-xl transition-colors" data-project="<?php echo esc_attr($title); ?>">
                             تبرع للمشروع
                         </button>
-                        <a href="https://wa.me/20${info.phone.replace(/^0/, '')}?text=${encodeURIComponent(`السلام عليكم، أرغب في التبرع لمشروع: ${act.title}`)}" target="_blank" class="w-full text-center bg-gray-50 hover:bg-emerald-50 text-emerald-900 border border-gray-200 font-bold text-xs py-2.5 rounded-xl transition-colors">
+                        <a href="https://wa.me/20<?php echo esc_attr(ltrim(preg_replace('/[^0-9]/', '', $phone), '0')); ?>?text=<?php echo urlencode('السلام عليكم، أرغب في التبرع لمشروع: ' . $title); ?>" target="_blank" class="w-full text-center bg-gray-50 hover:bg-emerald-50 text-emerald-900 border border-gray-200 font-bold text-xs py-2.5 rounded-xl transition-colors">
                             واتساب
                         </a>
                     </div>
                 </div>
-            </div>`;
-            }).join('')}
+            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
@@ -1070,10 +1667,10 @@ $bank_misr = get_theme_mod('alsafwa_bank_misr', '34800010009841');
 
                     <div class="bg-emerald-900/60 p-2.5 rounded-xl border border-emerald-800 flex items-center justify-between">
                         <div>
-                            <span class="text-gray-400 block text-[11px]">فودافون كاش:</span>
+                            <span class="text-gray-400 block text-[11px]">المحفظة الإلكترونية:</span>
                             <span class="font-mono text-white font-bold select-all"><?php echo esc_html($vodafone); ?></span>
                         </div>
-                        <button type="button" onclick="copyToClipboard('<?php echo esc_js($vodafone); ?>', 'تم نسخ رقم فودافون كاش')" class="text-amber-300 hover:text-white text-[11px] font-bold">نسخ</button>
+                        <button type="button" onclick="copyToClipboard('<?php echo esc_js($vodafone); ?>', 'تم نسخ رقم المحفظة الإلكترونية')" class="text-amber-300 hover:text-white text-[11px] font-bold">نسخ</button>
                     </div>
 
                     <div class="bg-emerald-900/60 p-2.5 rounded-xl border border-emerald-800 flex items-center justify-between">
@@ -1119,7 +1716,11 @@ $bank_misr = get_theme_mod('alsafwa_bank_misr', '34800010009841');
         </div>
 
         <div class="pt-8 border-t border-emerald-900/80 text-center text-xs text-gray-400 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>© <?php echo date('Y'); ?> جمعية الصفوة الإسلامية - قيد <?php echo esc_html($reg_no); ?> لسنة 1991. جميع الحقوق محفوظة.</p>
+            <p>© <?php echo date('Y'); ?> جمعية الصفوة الإسلامية - قيد <?php echo esc_html($reg_no); ?> لسنة 1991. جميع الحقوق محفوظة.
+            <?php if (current_user_can('manage_options')): ?>
+                · <a href="<?php echo admin_url('admin.php?page=alsafwa-cms'); ?>" class="text-amber-400/80 hover:text-amber-300 font-bold underline transition-colors" title="إدارة المحتوى والصور وبيانات الجمعية">⚙️ لوحة تحكم الصفوة (CMS)</a>
+            <?php endif; ?>
+            </p>
             <p class="text-amber-400/90 font-serif text-sm">"وَمَا تُقَدِّمُوا لِأَنفُسِكُم مِّنْ خَيْرٍ تَجِدُوهُ عِندَ اللَّهِ"</p>
         </div>
     </div>
@@ -1162,10 +1763,10 @@ $bank_misr = get_theme_mod('alsafwa_bank_misr', '34800010009841');
 
             <div class="p-3.5 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center justify-between">
                 <div>
-                    <span class="text-xs font-bold text-emerald-900 block">فودافون كاش:</span>
+                    <span class="text-xs font-bold text-emerald-900 block">المحفظة الإلكترونية:</span>
                     <span class="font-mono text-sm font-bold text-gray-900 select-all block mt-0.5"><?php echo esc_html($vodafone); ?></span>
                 </div>
-                <button type="button" onclick="copyToClipboard('<?php echo esc_js($vodafone); ?>', 'تم نسخ رقم فودافون كاش')" class="px-3 py-1 bg-white hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg border border-emerald-200">
+                <button type="button" onclick="copyToClipboard('<?php echo esc_js($vodafone); ?>', 'تم نسخ رقم المحفظة الإلكترونية')" class="px-3 py-1 bg-white hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg border border-emerald-200">
                     نسخ الرقم
                 </button>
             </div>
@@ -1352,8 +1953,9 @@ License: GPLv2 or later
 3. قسم لائحة النظام الأساسي والمصداقية القانونية (المادة 1 والمادة 4).
 4. قسم مشروع سيارة إكرام ودفن الموتى المعتمد في المادة 4 (المستهدف والأسهم الأربعة).
 5. قسم أنشطة ومجالات التكافل الاجتماعي الـ 11 مساراً للخير مع تصفية الأقسام.
-6. قسم التواصل الكامل وطلب المندوب مع حسابات البنك الأهلي وبنك مصر وإنستاباي وفودافون كاش.
+6. قسم التواصل الكامل وطلب المندوب مع حسابات البنك الأهلي وبنك مصر وإنستاباي والمحفظة الإلكترونية.
 7. إمكانية إدارة وتعديل كامل المحتوى من لوحة تحكم ووردبريس (المظهر -> تخصيص).
+8. لوحة تحكم وإدارة المحتوى الشاملة (CMS Panel) المدمجة تلقائياً في القائمة الجانبية: لوحة تحكم جمعية الصفوة (CMS).
 
 == طريقة التركيب على ووردبريس ==
 1. ادخل إلى لوحة تحكم ووردبريس (wp-admin).
@@ -1361,12 +1963,13 @@ License: GPLv2 or later
 3. اضغط على "أضف قالباً جديداً" ثم "رفع قالب".
 4. اختر ملف zip واضغط "التنصيب الآن".
 5. اضغط على "تفعيل" (Activate).
-6. لتعديل أي بيانات اذهب إلى: المظهر -> تخصيص -> إدارة محتوى جمعية الصفوة الإسلامية.
+6. لإدارة وتعديل المحتوى والأنشطة والصور مباشرة: اذهب إلى "لوحة تحكم جمعية الصفوة (CMS)" في القائمة الجانبية، أو المظهر -> تخصيص.
 `;
 
   return [
     { filename: 'style.css', description: 'ملف التعريف والتنسيقات الرئيسي للقالب (WordPress Theme Stylesheet)', content: styleCss },
     { filename: 'functions.php', description: 'ملف دوال القالب، تسجيل القوائم، وتخصيص المحتوى من لوحة التحكم (WP Customizer)', content: functionsPhp },
+    { filename: 'inc/admin-cms.php', description: 'لوحة التحكم وإدارة المحتوى الشاملة في ووردبريس (WordPress Admin CMS Panel)', content: adminCmsPhp },
     { filename: 'header.php', description: 'الهيدر العربي مع اللوجو وشريط الإشهار الرسمي وروابط السوشيال ميديا (فيسبوك، يوتيوب، واتساب)', content: headerPhp },
     { filename: 'front-page.php', description: 'قالب الصفحة الرئيسية بكامل الأقسام (مشروع سيارة الموتى، الـ 11 نشاطاً، وقسم التواصل)', content: frontPagePhp },
     { filename: 'footer.php', description: 'الفوتر مع بوابات الدفع، الحسابات البنكية، والمودال التفاعلي للتبرع والتواصل', content: footerPhp },
@@ -1457,7 +2060,15 @@ export async function downloadWordPressThemeZip(
   const files = generateWordPressThemeFiles(content, activities);
 
   files.forEach(f => {
-    folder?.file(f.filename, f.content);
+    if (f.filename.includes('/')) {
+      const parts = f.filename.split('/');
+      const dir = parts.slice(0, -1).join('/');
+      const fname = parts[parts.length - 1];
+      const sub = folder?.folder(dir);
+      sub?.file(fname, f.content);
+    } else {
+      folder?.file(f.filename, f.content);
+    }
   });
 
   // Also include the demo content XML inside the zip for instant access

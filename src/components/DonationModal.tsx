@@ -316,10 +316,10 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 }`}
               >
                 <div className="flex items-center gap-1.5 mb-1 text-xs">
-                  <Smartphone className="w-3.5 h-3.5 text-red-600" />
-                  <span>فودافون كاش</span>
+                  <Smartphone className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>المحفظة الإلكترونية</span>
                 </div>
-                <span className="text-[10px] text-stone-500 block">وكافة محافظ المحمول</span>
+                <span className="text-[10px] text-stone-500 block">كافة محافظ المحمول والهاتف</span>
               </button>
 
               <button
@@ -381,9 +381,9 @@ export const DonationModal: React.FC<DonationModalProps> = ({
             )}
 
             {paymentMethod === 'vodafone_cash' && (
-              <div className="p-4 bg-red-50/80 border border-red-200 rounded-2xl text-xs space-y-2">
-                <span className="font-bold text-red-900 block">
-                  رقم محفظة فودافون كاش الرسمية للجمعية:
+              <div className="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl text-xs space-y-2">
+                <span className="font-bold text-[#0F5132] block">
+                  رقم المحفظة الإلكترونية الرسمي للجمعية:
                 </span>
                 <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-red-300">
                   <span className="font-mono font-bold text-stone-800 text-sm">

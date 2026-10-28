@@ -1109,7 +1109,7 @@ export const AdminCMSModal: React.FC<AdminCMSModalProps> = ({
                   حسابات التبرع وبوابات الدفع وروابط السوشيال ميديا
                 </h4>
                 <p className="text-xs text-stone-500">
-                  تعديل معرف إنستاباي، فودافون كاش، وأرقام حسابات البنك الأهلي وبنك مصر وروابط التواصل
+                  تعديل معرف إنستاباي، رقم المحفظة الإلكترونية، وأرقام حسابات البنك الأهلي وبنك مصر وروابط التواصل
                 </p>
               </div>
 
@@ -1137,7 +1137,7 @@ export const AdminCMSModal: React.FC<AdminCMSModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-stone-700 mb-1">رقم فودافون كاش ومحافظ المحمول:</label>
+                    <label className="block text-xs font-bold text-stone-700 mb-1">رقم المحفظة الإلكترونية:</label>
                     <input
                       type="text"
                       value={formData.paymentGateways?.vodafoneCash.numbers[0] || formData.phone}
@@ -1416,7 +1416,7 @@ export const AdminCMSModal: React.FC<AdminCMSModalProps> = ({
                 <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-3">
                   <span className="text-xs font-bold text-emerald-900 block">قالب ووردبريس الرسمي المحدث:</span>
                   <p className="text-xs text-stone-600 leading-relaxed">
-                    ملف ZIP كامل يشمل كل أقسام الموقع، مشروع سيارة الموتى، الـ 11 نشاطاً، وروابط السوشيال ميديا.
+                    ملف ZIP كامل يشمل كل أقسام الموقع، لوحة تحكم وإدارة المحتوى الشاملة في ووردبريس (CMS Panel)، مشروع سيارة الموتى، الـ 11 نشاطاً، والمحفظة الإلكترونية.
                   </p>
                   <button
                     type="button"
@@ -1432,7 +1432,7 @@ export const AdminCMSModal: React.FC<AdminCMSModalProps> = ({
                 <div className="p-4 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-3">
                   <span className="text-xs font-bold text-blue-900 block">إضافة التبرعات المباشرة (Plugin):</span>
                   <p className="text-xs text-stone-600 leading-relaxed">
-                    إضافة ووردبريس تدعم الشورت كود [alsafwa_donate_box] وربط التبرعات بإنستاباي وفودافون كاش.
+                    إضافة ووردبريس تدعم الشورت كود [alsafwa_donate_box] وربط التبرعات بإنستاباي والمحفظة الإلكترونية.
                   </p>
                   <button
                     type="button"

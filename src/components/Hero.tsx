@@ -130,7 +130,7 @@ export const Hero: React.FC<HeroProps> = ({ content, onOpenDonate }) => {
               </div>
               <div className="flex items-center gap-2 p-3 bg-emerald-950/70 border border-emerald-800/60 rounded-xl">
                 <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                <span className="text-stone-200">تبرع عبر إنستاباي وفودافون</span>
+                <span className="text-stone-200">تبرع عبر إنستاباي والمحفظة الإلكترونية</span>
               </div>
             </div>
 

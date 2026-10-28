@@ -146,7 +146,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
 
               <div className="p-2.5 rounded-lg bg-emerald-950/70 border border-emerald-900">
-                <span className="text-stone-400 block text-[11px]">فودافون كاش ومحافظ المحمول:</span>
+                <span className="text-stone-400 block text-[11px]">المحفظة الإلكترونية:</span>
                 <span className="font-mono text-white font-bold block mt-0.5 select-all">
                   {info.phone}
                 </span>
