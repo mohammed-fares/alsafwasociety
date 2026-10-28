@@ -1080,13 +1080,164 @@ $logo_url = !empty($site_data['logoUrl']) ? $site_data['logoUrl'] : '${info.logo
 
             <!-- Primary Action Zone -->
             <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                <button type="button" class="js-open-donate bg-emerald-800 hover:bg-emerald-900 text-white font-black text-sm px-5 py-2.5 rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-2">
+                <button type="button" class="js-open-donate bg-emerald-800 hover:bg-emerald-900 text-white font-black text-sm px-4 sm:px-5 py-2.5 rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-2">
                     <svg class="w-4 h-4 fill-current text-amber-300" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <span>تبرع الآن</span>
+                </button>
+
+                <!-- Responsive Mobile & Tablet Menu Button (active on screens below lg) -->
+                <button type="button" onclick="toggleMobileNav()" class="lg:hidden p-2 text-gray-700 hover:text-emerald-900 hover:bg-emerald-50 rounded-xl border border-gray-200 transition-colors" aria-label="فتح القائمة الرئيسية" title="القائمة">
+                    <svg class="w-6 h-6 stroke-current fill-none stroke-2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
                 </button>
             </div>
         </div>
     </div>
+
+    <!-- Responsive Mobile & Tablet Off-Canvas Drawer Navigation -->
+    <div id="alsafwa-mobile-nav" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-label="قائمة الهاتف والتابلت">
+        <!-- Backdrop Overlay -->
+        <div id="alsafwa-mobile-backdrop" onclick="closeMobileNav()" class="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
+
+        <!-- Sliding Drawer Container -->
+        <div class="fixed inset-y-0 right-0 w-full max-w-sm sm:max-w-md bg-white shadow-2xl z-50 flex flex-col justify-between overflow-y-auto border-l border-gray-200 text-right">
+            <!-- Drawer Header -->
+            <div class="p-4 sm:p-5 border-b border-gray-200 bg-[#FAF8F5] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <?php if (has_custom_logo()) : ?>
+                        <?php the_custom_logo(); ?>
+                    <?php elseif (!empty($logo_url)) : ?>
+                        <img src="<?php echo esc_url($logo_url); ?>" alt="جمعية الصفوة الإسلامية" class="h-10 w-10 object-contain rounded-full shadow-xs border border-emerald-100" />
+                    <?php else : ?>
+                        <img src="<?php echo get_template_directory_uri(); ?>/assets/logo.jpg" alt="جمعية الصفوة الإسلامية" class="h-10 w-10 object-contain rounded-full shadow-xs border border-emerald-100" onerror="this.src='https://api.iconify.design/lucide:shield-check.svg?color=%230F5132&width=40'" />
+                    <?php endif; ?>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-black text-emerald-950 leading-tight">جمعية الصفوة الإسلامية</h3>
+                        <p class="text-[11px] text-amber-800 font-semibold font-mono">مشهرة برقم <?php echo esc_html($reg_no); ?> لسنة <?php echo esc_html($reg_yr); ?></p>
+                    </div>
+                </div>
+
+                <button type="button" onclick="closeMobileNav()" class="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors" aria-label="إغلاق القائمة">
+                    <svg class="w-5 h-5 stroke-current fill-none stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Trust Badge Bar -->
+            <div class="bg-[#052316] text-white px-4 py-2.5 flex items-center justify-between text-xs">
+                <span class="flex items-center gap-1.5 text-emerald-200">
+                    <span>🛡️ <?php echo esc_html($admin_area); ?> · القاهرة</span>
+                </span>
+                <span class="font-mono text-amber-300 font-bold">تأسست <?php echo esc_html($reg_yr); ?></span>
+            </div>
+
+            <!-- Navigation Links List -->
+            <div class="p-4 space-y-1.5 flex-1">
+                <span class="text-[11px] font-bold text-gray-400 block px-3 mb-1">أقسام ومحتويات الموقع</span>
+
+                <a href="<?php echo esc_url(home_url('/')); ?>" onclick="closeMobileNav()" class="flex items-center justify-between p-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-emerald-800 font-bold transition-all">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-gray-100 text-gray-600 rounded-lg">🏠</span>
+                        <span class="text-sm">الرئيسية</span>
+                    </div>
+                    <span class="text-gray-400">‹</span>
+                </a>
+
+                <a href="#about" onclick="closeMobileNav()" class="flex items-center justify-between p-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-emerald-800 font-bold transition-all">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-gray-100 text-gray-600 rounded-lg">🏛️</span>
+                        <span class="text-sm">عن الجمعية والإشهار</span>
+                    </div>
+                    <span class="text-gray-400">‹</span>
+                </a>
+
+                <a href="#hearse-project" onclick="closeMobileNav()" class="flex items-center justify-between p-3 rounded-xl bg-emerald-50 text-emerald-900 font-black border border-emerald-200 transition-all">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-emerald-100 text-emerald-800 rounded-lg">🚐</span>
+                        <span class="text-sm">سيارة إكرام ودفن الموتى</span>
+                    </div>
+                    <span class="text-[10px] font-black bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full">المادة 4</span>
+                </a>
+
+                <a href="#activities" onclick="closeMobileNav()" class="flex items-center justify-between p-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-emerald-800 font-bold transition-all">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-gray-100 text-gray-600 rounded-lg">🤲</span>
+                        <span class="text-sm">الأنشطة ومسارات الخير الـ 11</span>
+                    </div>
+                    <span class="text-gray-400">‹</span>
+                </a>
+
+                <a href="#bylaws" onclick="closeMobileNav()" class="flex items-center justify-between p-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-emerald-800 font-bold transition-all">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-gray-100 text-gray-600 rounded-lg">📜</span>
+                        <span class="text-sm">اللائحة والمستندات الرسمية</span>
+                    </div>
+                    <span class="text-gray-400">‹</span>
+                </a>
+
+                <a href="#quick-donate" onclick="closeMobileNav()" class="flex items-center justify-between p-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-emerald-800 font-bold transition-all">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-gray-100 text-gray-600 rounded-lg">💳</span>
+                        <span class="text-sm">بوابة التبرع السريع والحسابات</span>
+                    </div>
+                    <span class="text-gray-400">‹</span>
+                </a>
+
+                <a href="#contact" onclick="closeMobileNav()" class="flex items-center justify-between p-3 rounded-xl text-gray-700 hover:bg-gray-50 hover:text-emerald-800 font-bold transition-all">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-gray-100 text-gray-600 rounded-lg">📞</span>
+                        <span class="text-sm">تواصل معنا وطلب مندوب</span>
+                    </div>
+                    <span class="text-gray-400">‹</span>
+                </a>
+
+                <!-- Donate Button inside Drawer -->
+                <div class="pt-4 border-t border-gray-200 mt-2">
+                    <button type="button" onclick="closeMobileNav(); if (typeof openDonationModal === 'function') openDonationModal('تبرع عام للجمعية');" class="w-full py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-black text-sm rounded-xl shadow-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4 fill-current text-amber-300" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <span>تبرع الآن للجمعية</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Contact Links -->
+            <div class="p-4 bg-gray-50 border-t border-gray-200 space-y-3">
+                <div class="flex items-center justify-between gap-2">
+                    <a href="tel:<?php echo esc_attr($phone); ?>" class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-white hover:bg-emerald-50 border border-gray-200 text-gray-800 rounded-xl text-xs font-bold transition-colors">
+                        <span>📞 <?php echo esc_html($phone); ?></span>
+                    </a>
+                    <a href="<?php echo esc_url($wa_link); ?>" target="_blank" class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors">
+                        <span>💬 واتساب</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleMobileNav() {
+        var nav = document.getElementById('alsafwa-mobile-nav');
+        if (!nav) return;
+        if (nav.classList.contains('hidden')) {
+            nav.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            closeMobileNav();
+        }
+    }
+    function closeMobileNav() {
+        var nav = document.getElementById('alsafwa-mobile-nav');
+        if (nav) {
+            nav.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeMobileNav();
+        }
+    });
+    </script>
 </header>
 `;
 
