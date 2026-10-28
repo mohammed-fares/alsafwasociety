@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Amiri', Georgia, Cambria, 'Times New Roman', serif;
+  
+  --color-brand-emerald-50: #f0fdf4;
+  --color-brand-emerald-100: #dcfce7;
+  --color-brand-emerald-600: #16a34a;
+  --color-brand-emerald-700: #15803d;
+  --color-brand-emerald-800: #0f5132;
+  --color-brand-emerald-900: #0a3622;
+  --color-brand-emerald-950: #052316;
+
+  --color-brand-gold-50: #fdfbf7;
+  --color-brand-gold-100: #fbf6eb;
+  --color-brand-gold-400: #d4af37;
+  --color-brand-gold-500: #c5a059;
+  --color-brand-gold-600: #b38e44;
+  --color-brand-gold-700: #8c6a28;
+}
+
+:root {
+  font-family: 'Cairo', system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Islamic pattern background utility */
+.bg-islamic-pattern {
+  background-color: #FAF8F5;
+  background-image: radial-gradient(rgba(15, 81, 50, 0.04) 1px, transparent 1px), radial-gradient(rgba(197, 160, 89, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+.bg-dark-emerald {
+  background: radial-gradient(circle at top right, #115e3b 0%, #0a3622 55%, #052115 100%);
+}
+
+/* Print styling for the official donation receipt */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: white;
+    box-shadow: none;
+  }
+}
